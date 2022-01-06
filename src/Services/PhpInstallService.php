@@ -6,6 +6,7 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Process\Process;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -37,6 +38,11 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $outputPath = $this->getConfig()['outputPath'] . '/' . $outputFileName;
         file_put_contents($outputPath, $response->getBody());
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
+
+        $process = new Process('cd ~');
+        $process->run();
+
+        $this->getOutput()->writeln($process->getOutput());
 
         return Command::SUCCESS;
     }
