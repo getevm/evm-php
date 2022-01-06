@@ -2,6 +2,7 @@
 
 namespace Getevm\Evm\Services;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InstallService
@@ -28,5 +29,7 @@ class InstallService
     private function install()
     {
         $this->output->write('Attempting to install PHP v' . $this->config['version'] . '...');
+
+        return Command::SUCCESS;
     }
 }
