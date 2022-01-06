@@ -18,7 +18,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $this->getOutput()->writeln('Attempting to download from ' . $this->getUnixRelease());
 
         $response = $this->getGuzzle()
-            ->get($this->getUnixRelease());
+            ->get($this->getWindowsRelease());
 
         if ($response->getStatusCode() === 400) {
             $this->getOutput()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
