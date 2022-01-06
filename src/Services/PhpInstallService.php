@@ -38,12 +38,12 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         if (!is_dir($folderName)) {
             mkdir($folderName, null, true);
+            $outputPath = $this->getPathToDeps() . '/' . $folderName . '/' . $outputFileName;
+
+            file_put_contents($outputPath, $response->getBody());
         }
 
-        $outputPath = $this->getPathToDeps() . '/' . $folderName . '/' . $outputFileName;
 
-        file_put_contents($outputPath, $response->getBody());
-        
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
 
         return Command::SUCCESS;
