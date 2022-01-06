@@ -20,8 +20,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
         $outputFileName = $this->buildOutputFileName($ext);
 
-        $this->getOutput()->writeln(json_encode($this->getConfig()));
-
         if (!$releaseUrl) {
             $this->getOutput()->writeln('Failed to get release from OS.');
             return Command::FAILURE;
@@ -33,13 +31,19 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
             $this->getOutput()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
-
             return Command::INVALID;
         }
 
-        $outputPath = $this->getPathToDeps() . '/' . $outputFileName;
-        $this->getOutput()->writeln($outputPath);
+        $folderName = $this->getPathToDeps() . '/' . pathinfo($outputFileName, PATHINFO_FILENAME);
+
+        if (!is_dir($folderName)) {
+            mkdir($folderName, null, true);
+        }
+
+        $outputPath = $this->getPathToDeps() . '/' . $folderName . '/' . $outputFileName;
+
         file_put_contents($outputPath, $response->getBody());
+        
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
 
         return Command::SUCCESS;
