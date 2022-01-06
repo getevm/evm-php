@@ -14,7 +14,8 @@ class PhpCommand extends Command
         $this
             ->setName('php')
             ->setDescription('Manage your PHP environment')
-            ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.');
+            ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
+            ->setHelp('testing\ntesting\n\ntest');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
