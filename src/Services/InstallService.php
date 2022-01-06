@@ -2,29 +2,31 @@
 
 namespace Getevm\Evm\Services;
 
+use Symfony\Component\Console\Output\OutputInterface;
+
 class InstallService
 {
     /**
-     * @var string
+     * @var OutputInterface
      */
-    private $dependency;
+    private $output;
     /**
-     * @var string
+     * @var array
      */
-    private $version;
+    private $config;
 
     /**
-     * @param string $dependency
-     * @param string $version
+     * @param OutputInterface $output
+     * @param array $config
      */
-    public function __construct($dependency, $version)
+    public function __construct(OutputInterface $output, array $config)
     {
-        $this->dependency = $dependency;
-        $this->version = $version;
+        $this->output = $output;
+        $this->config = $config;
     }
 
     private function install()
     {
-
+        $this->output->write('Attempting to install PHP v' . $this->config['version'] . '...');
     }
 }

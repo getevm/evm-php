@@ -10,6 +10,12 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 use Getevm\Evm\Commands\PhpCommand;
 use Symfony\Component\Console\Application;
 
+/**
+ * - evm php install 7.4.0
+ * - evm php use 7.4.0
+ * - evm php remove 7.4.0
+ */
+
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
 $application->run();

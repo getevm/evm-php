@@ -15,7 +15,8 @@ class PhpCommand extends Command
         $this
             ->setName('php')
             ->setDescription('Manage your PHP environment')
-            ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.');
+            ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
+            ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -24,11 +25,14 @@ class PhpCommand extends Command
 
         switch ($cmd) {
             case 'install':
-                $version = $input->getArguments()[1];
+                $version = $input->getArgument('version');
 
                 $output->write($cmd . ' ' . $version);
 
-                return (new InstallService('php', $version));
+                return (new InstallService($output, [
+                    'dependency' => 'php',
+                    'version' => $version
+                ]));
 
             default:
                 return Command::SUCCESS;
