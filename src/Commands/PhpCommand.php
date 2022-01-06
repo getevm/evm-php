@@ -34,7 +34,7 @@ class PhpCommand extends Command
                     'version' => $version,
                     'nts' => $input->getOption('nts'),
                     'archType' => $input->getOption('archType'),
-                    'outputPath' => $input->getOption('outputPath') ?? DEPS_PATH
+                    'outputPath' => DEPS_PATH
                 ]))->execute();
 
             default:
