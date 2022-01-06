@@ -7,7 +7,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
 }
 
-const DEPS_PATH = __DIR__ . '/../deps/';
+const DEPS_PATH = __DIR__ . '/../getevm/evm/deps';
 
 use Getevm\Evm\Commands\PhpCommand;
 use Symfony\Component\Console\Application;

@@ -36,7 +36,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        $outputPath = $this->getPathToDeps() . '/' . $outputFileName;
+        $outputPath = $this->getPathToDeps() . '/php/' . $outputFileName;
 
         $this->getOutput()->writeln($outputPath);
 
@@ -90,10 +90,5 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         }
 
         return null;
-    }
-
-    private function getPathToDeps()
-    {
-        return '%HOMEDRIVE%%HOMEPATH%/evm/php';
     }
 }
