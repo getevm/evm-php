@@ -27,10 +27,7 @@ class PhpCommand extends Command
             case 'install':
                 $version = $input->getArgument('version');
 
-                return (new PhpInstallService($output, [
-                    'dependency' => 'php',
-                    'version' => $version
-                ]))->execute();
+                return (new PhpInstallService($output, ['dependency' => 'php', 'version' => $version]))->execute();
 
             default:
                 return Command::SUCCESS;
