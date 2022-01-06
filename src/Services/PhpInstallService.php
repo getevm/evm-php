@@ -44,6 +44,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $zip->extractTo($outputPath);
         $zip->close();
 
+        unlink($outputPath . '/' . $outputFileName);
+
         return Command::SUCCESS;
     }
 
