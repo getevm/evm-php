@@ -15,6 +15,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
+        $this->getOutput()->writeln(PHP_OS);
         $this->getOutput()->writeln('Attempting to download from ' . $this->getWindowsRelease());
 
         $response = $this->getGuzzle()
@@ -41,6 +42,13 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     public function getWindowsRelease()
     {
-        return 'https://windows.php.net/downloads/releases/archives/php-' . $this->getConfig()['version'] . ($this->getConfig()['nts'] ? '-nts' : '') . '-Win32-vs16-x64.zip';
+        $url = 'https://windows.php.net/downloads/releases/archives/php-';
+        $url .= $this->getConfig()['version'];
+        $url .= $this->getConfig()['nts'] ? '-nts' : '';
+        $url .= '-Win32-vs16-';
+        $url .= $this->getConfig()['archType'];
+        $url .= '.zip';
+
+        return $url;
     }
 }

@@ -18,7 +18,8 @@ class PhpCommand extends Command
             ->setDescription('Manage your PHP environment')
             ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
             ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version')
-            ->addOption('nts', null, InputOption::VALUE_OPTIONAL, 'Non thread safe?', false);
+            ->addOption('nts', null, InputOption::VALUE_OPTIONAL, 'Non thread safe?', false)
+            ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Architecture type?', 'x64');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -32,7 +33,8 @@ class PhpCommand extends Command
                 return (new PhpInstallService($output, [
                     'dependency' => 'php',
                     'version' => $version,
-                    'nts' => $input->getOption('nts')
+                    'nts' => $input->getOption('nts'),
+                    'archType' => $input->getOption('archType'),
                 ]))->execute();
 
             default:
