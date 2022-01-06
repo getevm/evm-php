@@ -31,7 +31,7 @@ class PhpCommand extends Command
                 return (new PhpInstallService($output, [
                     'dependency' => 'php',
                     'version' => $version
-                ]))->install();
+                ]))->execute();
 
             default:
                 return Command::SUCCESS;
