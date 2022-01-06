@@ -18,7 +18,7 @@ class PhpCommand extends Command
             ->setDescription('Manage your PHP environment')
             ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
             ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version')
-            ->addOption('nts', null, InputOption::VALUE_OPTIONAL, 'Non thread safe?', false)
+            ->addOption('nts', null, InputOption::VALUE_NONE, 'Non thread safe?', false)
             ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Architecture type?', 'x64');
     }
 
