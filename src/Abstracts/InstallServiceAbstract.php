@@ -7,7 +7,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 class InstallServiceAbstract
 {
     private $output;
-
     private $config;
 
     /**
@@ -30,7 +29,7 @@ class InstallServiceAbstract
     }
 
     /**
-     * @return mixed
+     * @return array
      */
     public function getConfig()
     {
