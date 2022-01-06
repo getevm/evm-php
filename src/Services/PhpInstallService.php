@@ -36,7 +36,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        $outputPath = $this->getPathToDeps() . '/php/' . $outputFileName;
+        $outputPath = DEPS_PATH . '/php/' . $outputFileName;
         $this->getOutput()->writeln($outputPath);
         file_put_contents($outputPath, $response->getBody());
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
