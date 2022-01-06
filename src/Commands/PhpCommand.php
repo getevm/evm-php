@@ -26,9 +26,7 @@ class PhpCommand extends Command
         switch ($cmd) {
             case 'install':
                 $version = $input->getArgument('version');
-
-                $output->write($cmd . ' ' . $version);
-
+                
                 return (new InstallService($output, [
                     'dependency' => 'php',
                     'version' => $version
