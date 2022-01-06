@@ -35,11 +35,11 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        $outputPath = $this->getConfig()['outputPath'] . '/' . $outputFileName;
-        file_put_contents($outputPath, $response->getBody());
-        $this->getOutput()->writeln('Downloaded to ' . $outputPath);
+//        $outputPath = $this->getConfig()['outputPath'] . '/' . $outputFileName;
+//        file_put_contents($outputPath, $response->getBody());
+//        $this->getOutput()->writeln('Downloaded to ' . $outputPath);
 
-        $process = new Process('cd ~');
+        $process = new Process(['cd ~']);
         $process->run();
 
         $this->getOutput()->writeln($process->getOutput());
