@@ -2,7 +2,6 @@
 
 namespace Getevm\Evm\Commands;
 
-use Getevm\Evm\Services\InstallService;
 use Getevm\Evm\Services\PhpInstallService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;

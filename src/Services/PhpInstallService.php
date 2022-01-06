@@ -2,16 +2,24 @@
 
 namespace Getevm\Evm\Services;
 
-use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
+class PhpInstallService implements InstallServiceInterface
 {
+    private $output;
+    private $config;
+
+    /**
+     * @param OutputInterface $output
+     * @param array $config
+     * @return void
+     */
     public function __constructor(OutputInterface $output, array $config)
     {
-        parent::__constructor($output, $config);
+        $this->output = $output;
+        $this->config = $config;
     }
 
     /**
@@ -19,7 +27,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
-        $this->getOutput()->writeln('Requesting PHP v' . $this->getConfig()['version']);
+        $this->output->writeln('Requesting PHP v' . $this->config['version']);
 
         return Command::SUCCESS;
     }
