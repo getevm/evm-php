@@ -2,12 +2,25 @@
 
 namespace Getevm\Evm\Abstracts;
 
+use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InstallServiceAbstract
 {
+    /**
+     * @var OutputInterface
+     */
     private $output;
+
+    /**
+     * @var array
+     */
     private $config;
+
+    /**
+     * @var Client
+     */
+    private $guzzle;
 
     /**
      * @param OutputInterface $output
@@ -18,6 +31,7 @@ class InstallServiceAbstract
     {
         $this->output = $output;
         $this->config = $config;
+        $this->guzzle = new Client;
     }
 
     /**
@@ -34,5 +48,13 @@ class InstallServiceAbstract
     public function getConfig()
     {
         return $this->config;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getGuzzle()
+    {
+        return $this->guzzle;
     }
 }
