@@ -33,14 +33,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             $this->getOutput()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
             return Command::INVALID;
         }
-
-        $folderName = $this->getPathToDeps() . '/' . pathinfo($outputFileName, PATHINFO_FILENAME);
-
-        if (!is_dir($folderName)) {
-            mkdir($folderName, null, true);
-        }
-
-        $outputPath = $this->getPathToDeps() . '/' . $folderName . '/' . $outputFileName;
+        
+        $outputPath = $this->getOutputPath($outputFileName) . '/' . $outputFileName;
         file_put_contents($outputPath, $response->getBody());
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
 
@@ -91,6 +85,17 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         }
 
         return null;
+    }
+
+    private function getOutputPath($outputFileName)
+    {
+        $outputPath = $this->getPathToDeps() . '/' . pathinfo($outputFileName, PATHINFO_FILENAME);
+
+        if (!is_dir($outputPath)) {
+            mkdir($outputPath, null, true);
+        }
+
+        return $outputPath;
     }
 
     private function getPathToDeps()
