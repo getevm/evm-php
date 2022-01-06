@@ -31,10 +31,10 @@ class PhpCommand extends Command
                 $version = $input->getArgument('version');
 
                 return (new PhpInstallService($output, [
-                    'dependency' => 'php',
                     'version' => $version,
                     'nts' => $input->getOption('nts'),
                     'archType' => $input->getOption('archType'),
+                    'outputPath' => $input->getOption('outputPath') ?? DEPS_PATH
                 ]))->execute();
 
             default:

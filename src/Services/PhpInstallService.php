@@ -17,15 +17,14 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     {
         $releaseUrl = $this->getReleaseUrl();
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
-        $osAsStr = SystemService::toString();
-        $outputFileName = $this->getConfig()['version'] . '-' . $osAsStr . '.' . $ext;
+        $outputFileName = $this->buildOutputFileName($ext);
 
         if (!$releaseUrl) {
             $this->getOutput()->writeln('Failed to get release from OS.');
             return Command::FAILURE;
         }
 
-        $this->getOutput()->writeln('Attempting to download from ' . $releaseUrl . ' (' . $osAsStr . ')');
+        $this->getOutput()->writeln('Attempting to download from ' . $releaseUrl . ' (' . SystemService::toString() . ')');
 
         $response = $this->getGuzzle()->get($releaseUrl);
 
@@ -35,9 +34,9 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        file_put_contents('C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.zip', $response->getBody());
-
-        $this->getOutput()->writeln('Downloaded to C:\Users\Script47\Desktop\php\\' . $outputFileName);
+        $outputPath = $this->getConfig()['outputPath'] . '/' . $outputFileName;
+        file_put_contents($outputPath, $response->getBody());
+        $this->getOutput()->writeln('Downloaded to ' . $outputPath);
 
         return Command::SUCCESS;
     }
@@ -57,6 +56,25 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $url .= '.zip';
 
         return $url;
+    }
+
+    private function buildOutputFileName($ext)
+    {
+        $fileName = $this->getConfig()['version'];
+
+        if ($this->getConfig()['nts']) {
+            $fileName .= '-nts';
+        }
+
+        if (SystemService::toString() === SystemService::OS_WIN) {
+            $fileName .= '-' . $this->getConfig()['archType'];
+        }
+
+        $fileName .= '-' . SystemService::toString();
+
+        $fileName .= '.' . $ext;
+
+        return $fileName;
     }
 
     public function getReleaseUrl()
