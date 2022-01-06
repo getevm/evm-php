@@ -11,5 +11,5 @@ use Getevm\Evm\Commands\Php\PhpCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application('Environment Version Manager', '1.0.0');
-$application->add(new PhpCommand::class);
+$application->add(new PhpCommand);
 $application->run();
