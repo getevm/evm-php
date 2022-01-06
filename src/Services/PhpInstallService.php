@@ -28,6 +28,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         file_put_contents('C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.tar.gz', $response->getBody());
 
+        $this->getOutput()->writeln('Downloaded to C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.tar.gz');
+
         return Command::SUCCESS;
     }
 
