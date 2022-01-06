@@ -26,7 +26,10 @@ class InstallService
         $this->config = $config;
     }
 
-    private function install()
+    /**
+     * @return int
+     */
+    public function install()
     {
         $this->output->write('Attempting to install PHP v' . $this->config['version'] . '...');
 
