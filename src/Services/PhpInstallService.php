@@ -33,10 +33,16 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             $this->getOutput()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
             return Command::INVALID;
         }
-        
-        $outputPath = $this->getOutputPath($outputFileName) . '/' . $outputFileName;
-        file_put_contents($outputPath, $response->getBody());
+
+        $outputPath = $this->getOutputPath($outputFileName);
+        file_put_contents($outputPath . '/' . $outputFileName, $response->getBody());
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
+
+        $zip = new \ZipArchive();
+
+        $zip->open($outputPath . '/' . $outputFileName);
+        $zip->extractTo($outputPath);
+        $zip->close();
 
         return Command::SUCCESS;
     }
