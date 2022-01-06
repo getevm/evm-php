@@ -19,6 +19,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
         $outputFileName = $this->buildOutputFileName($ext);
 
+        $this->getOutput()->writeln(json_encode($this->getConfig()));
+
         if (!$releaseUrl) {
             $this->getOutput()->writeln('Failed to get release from OS.');
             return Command::FAILURE;
