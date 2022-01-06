@@ -39,8 +39,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         return 'https://museum.php.net/php8/php-' . $this->getConfig()['version'] . '.tar.gz';
     }
 
-    public function getWindows()
+    public function getWindowsRelease()
     {
-
+        return 'https://windows.php.net/downloads/releases/archives/php-' . $this->getConfig()['version'] . ($this->getConfig()['nts'] ? '-nts' : '') . '-Win32-vs16-x64.zip';
     }
 }

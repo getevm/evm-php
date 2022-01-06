@@ -6,6 +6,7 @@ use Getevm\Evm\Services\PhpInstallService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class PhpCommand extends Command
@@ -16,7 +17,8 @@ class PhpCommand extends Command
             ->setName('php')
             ->setDescription('Manage your PHP environment')
             ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
-            ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version');
+            ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version')
+            ->addOption('nts', null, InputOption::VALUE_OPTIONAL, 'Non thread safe?', false);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -29,7 +31,8 @@ class PhpCommand extends Command
 
                 return (new PhpInstallService($output, [
                     'dependency' => 'php',
-                    'version' => $version
+                    'version' => $version,
+                    'nts' => $input->getOption('nts')
                 ]))->execute();
 
             default:
