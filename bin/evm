@@ -7,10 +7,10 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
     require __DIR__ . '/../vendor/autoload.php';
 }
 
-use Getevm\Evm\Commands\EvmCommand;
+use Getevm\Evm\Commands\Php\PhpCommand;
 use Symfony\Component\Console\Application;
 
 $application = new Application('Environment Version Manager', '1.0.0');
 
-$application->add(new EvmCommand);
+$application->add(new PhpCommand::class);
 $application->run();
