@@ -6,7 +6,6 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Process\Process;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -35,14 +34,12 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-//        $outputPath = $this->getConfig()['outputPath'] . '/' . $outputFileName;
-//        file_put_contents($outputPath, $response->getBody());
+        $outputPath = $this->getPathToDeps() . '/' . $outputFileName;
+
+        $this->getOutput()->writeln($outputPath);
+
+        file_put_contents($outputPath, $response->getBody());
 //        $this->getOutput()->writeln('Downloaded to ' . $outputPath);
-
-        $process = new Process(['cd ~']);
-        $process->run();
-
-        $this->getOutput()->writeln($process->getOutput());
 
         return Command::SUCCESS;
     }
@@ -77,7 +74,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         }
 
         $fileName .= '-' . SystemService::toString();
-
         $fileName .= '.' . $ext;
 
         return $fileName;
@@ -92,5 +88,10 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         }
 
         return null;
+    }
+
+    private function getPathToDeps()
+    {
+        return '%HOMEDRIVE%%HOMEPATH%/evm/php';
     }
 }
