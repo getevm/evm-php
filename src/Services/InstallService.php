@@ -31,7 +31,7 @@ class InstallService
      */
     public function install()
     {
-        $this->output->write('Attempting to install PHP v' . $this->config['version'] . '...');
+        $this->output->writeln('Attempting to install PHP v' . $this->config['version'] . '...');
 
         return Command::SUCCESS;
     }
