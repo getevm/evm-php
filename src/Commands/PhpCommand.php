@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Commands;
 
 use Getevm\Evm\Services\InstallService;
+use Getevm\Evm\Services\PhpInstallService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -26,8 +27,8 @@ class PhpCommand extends Command
         switch ($cmd) {
             case 'install':
                 $version = $input->getArgument('version');
-                
-                return (new InstallService($output, [
+
+                return (new PhpInstallService($output, [
                     'dependency' => 'php',
                     'version' => $version
                 ]))->install();
