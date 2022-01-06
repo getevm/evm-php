@@ -26,6 +26,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
+        file_put_contents('C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.tar.gz', $response->getBody());
+
         return Command::SUCCESS;
     }
 
