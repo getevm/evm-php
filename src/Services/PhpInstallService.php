@@ -27,8 +27,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $this->getOutput()->writeln('Attempting to download from ' . $releaseUrl . ' (' . $osAsStr . ')');
 
-        $response = $this->getGuzzle()
-            ->get($this->getWindowsRelease());
+        $response = $this->getGuzzle()->get($releaseUrl);
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
             $this->getOutput()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
@@ -45,7 +44,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function getUnixReleaseUrl()
     {
-//        return 'https://www.php.net/distributions/php-' . $this->getConfig()['version'] . '.tar.gz';
         return 'https://museum.php.net/php8/php-' . $this->getConfig()['version'] . '.tar.gz';
     }
 
