@@ -15,6 +15,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
+        $this->createPathToDeps();
         $releaseUrl = $this->getReleaseUrl();
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
         $outputFileName = $this->buildOutputFileName($ext);
@@ -36,7 +37,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        $outputPath = DEPS_PATH . '/php/' . $outputFileName;
+        $outputPath = $this->getPathToDeps() . '/' . $outputFileName;
         $this->getOutput()->writeln($outputPath);
         file_put_contents($outputPath, $response->getBody());
         $this->getOutput()->writeln('Downloaded to ' . $outputPath);
@@ -69,7 +70,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             $fileName .= '-nts';
         }
 
-        if (SystemService::toString() === SystemService::OS_WIN) {
+        if (SystemService::getOS() === SystemService::OS_WIN) {
             $fileName .= '-' . $this->getConfig()['archType'];
         }
 
@@ -88,5 +89,32 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         }
 
         return null;
+    }
+
+    private function getPathToDeps()
+    {
+        $pathToPhpDeps = null;
+
+        switch (SystemService::getOS()) {
+            case SystemService::OS_WIN:
+                $pathToPhpDeps = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . '/evm/php';
+                break;
+
+            case SystemService::OS_LINUX:
+            case SystemService::OS_OSX:
+                $pathToPhpDeps = $_SERVER['HOME'] . '/evm/php';
+                break;
+        }
+
+        return $pathToPhpDeps;
+    }
+
+    private function createPathToDeps()
+    {
+        $pathToPhpDeps = $this->getPathToDeps();
+
+        if ($pathToPhpDeps && !is_dir($pathToPhpDeps)) {
+            mkdir($pathToPhpDeps, null, true);
+        }
     }
 }
