@@ -13,5 +13,4 @@ use Symfony\Component\Console\Application;
 $application = new Application('Environment Version Manager', '1.0.0');
 
 $application->add(new EvmCommand);
-
 $application->run();

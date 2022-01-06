@@ -9,19 +9,20 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EvmCommand extends Command
 {
+    private $dependencies = ['php', 'mysql'];
+
     protected function configure()
     {
-        $this
-            ->setName('evm')
-            ->setDescription('Manage your environment from the terminal')
-            ->addArgument('dependency', InputArgument::REQUIRED, 'The dependency to manage')
-            ->addArgument('cmd', InputArgument::REQUIRED, 'The command to use');
+        foreach ($this->dependencies as $dependency) {
+            $this
+                ->setName($dependency)
+                ->setDescription('Manage your ' . $dependency . ' environment');
+        }
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dependency = $input->getArgument('dependency');
-        $output->write($dependency);
+        $output->write('success!');
         return Command::SUCCESS;
     }
 }
