@@ -15,7 +15,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
-        $this->getOutput()->writeln('Attempting to download from ' . $this->getUnixRelease());
+        $this->getOutput()->writeln('Attempting to download from ' . $this->getWindowsRelease());
 
         $response = $this->getGuzzle()
             ->get($this->getWindowsRelease());
@@ -26,7 +26,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        file_put_contents('C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.tar.gz', $response->getBody());
+        file_put_contents('C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.zip', $response->getBody());
 
         $this->getOutput()->writeln('Downloaded to C:\Users\Script47\Desktop\php\\' . $this->getConfig()['version'] . '.tar.gz');
 
