@@ -33,8 +33,7 @@ class PhpCommand extends Command
                 return (new PhpInstallService($output, [
                     'version' => $version,
                     'nts' => $input->getOption('nts'),
-                    'archType' => $input->getOption('archType'),
-                    'outputPath' => DEPS_PATH
+                    'archType' => $input->getOption('archType')
                 ]))->execute();
 
             default:
