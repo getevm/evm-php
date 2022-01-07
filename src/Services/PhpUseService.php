@@ -49,7 +49,7 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
 
         exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
         $logs['output'] = $output;
-
+        $this->getOutputInterface()->writeln($output);
         file_put_contents($pathToLogs . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
 
         return Command::SUCCESS;
