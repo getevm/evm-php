@@ -23,7 +23,7 @@ class PhpCommand extends Command
             ->setDescription('Manage your PHP environment')
             ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
             ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version')
-            ->addOption('ts', null, InputOption::VALUE_NONE, 'Non thread safe?', $threadSafety)
+            ->addOption('ts', null, InputOption::VALUE_OPTIONAL, 'Non thread safe?', $threadSafety)
             ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Architecture type?', SystemService::getArchType())
             ->addOption('os', null, InputOption::VALUE_REQUIRED, 'Get release for specific OS', SystemService::getOSType());
     }
@@ -38,7 +38,7 @@ class PhpCommand extends Command
 
                 return (new PhpInstallService($output, [
                     'version' => $version,
-                    'ts' => $input->getOption('ts'),
+                    'ts' => ,
                     'archType' => $input->getOption('archType'),
                     'os' => SystemService::toString(),
                     'osType' => $input->getOption('osType'),
