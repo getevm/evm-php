@@ -22,7 +22,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $outputFileName = $this->buildOutputFileName($ext);
 
         $this->getOutputInterface()->writeln([
-            (new Process('echo %PATH%'))->getOutput()
+            (new Process(['echo %PATH%']))->getOutput()
         ]);
 
         if (!$releaseUrl) {
