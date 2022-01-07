@@ -17,6 +17,16 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
+        $exts = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts'];
+        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', [], null);
+        $extsQuestions->setMultiselect(true);
+        $extsQuestions->setAutocompleterValues(array_values($exts));
+        $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
+
+        if (!is_null($extsToEnable)) {
+            $this->getOutputInterface()->writeln($extsToEnable);
+        }
+
         $this->getOutputInterface()->writeln([
             'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
