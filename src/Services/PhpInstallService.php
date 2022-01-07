@@ -58,8 +58,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $log[] = $path;
 
-        file_put_contents($this->getPathToDeps() . '/' . date() . '.json', json_encode($log));
-        
+        file_put_contents($this->getPathToDeps() . '/' . time() . '.json', json_encode($log));
+
         return Command::SUCCESS;
     }
 
