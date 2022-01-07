@@ -121,7 +121,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
                     $fileName = pathinfo($release, PATHINFO_FILENAME);
 
                     $outputInterface->writeln([
-                       $fileName
+                        $fileName
                     ]);
 
                     if (strpos($fileName, '-nts-') === false) {
@@ -130,11 +130,15 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
                         list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileName);
                     }
 
+                    $outputInterface->writeln([
+                        $version . ' - ' . $config['version'],
+                        $archType . ' - ' . $config['archType']
+                    ]);
+
                     $versionCheck = $version === $config['version'];
                     $archTypeCheck = $archType === $config['archType'];
-                    $ntsCheck = !$config['ts'] && isset($nts) && $nts === 'nts';
 
-                    return $versionCheck && $archTypeCheck && $ntsCheck;
+                    return $versionCheck && $archTypeCheck && ($config['ts'] ? isset($nts) && $nts === 'nts' : !isset($nts));
                 }));
 
                 if (empty($release)) {
