@@ -1,11 +1,14 @@
 @echo off
 
-set KeyName=DERP
-set OldPath=%1
-set NewPath=%2
+SetLocal EnableDelayedExpansion
 
-echo "%KeyName%"
-echo "%OldPath%"
-echo "%NewPath%"
+set KeyName=Path
+set OldInstallDir=%1
+set NewInstallDir=%2
+set OldPath=%Path%
+set NewPath=!OldPath:%OldInstallDir%=!
 
-setx /m "%KeyName%" "%NewPath%"
+setx /m "%KeyName%" %NewPath%%NewInstallDir%;
+
+pause
+EndLocal
