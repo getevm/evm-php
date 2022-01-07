@@ -12,6 +12,7 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
     {
         $log = [];
         $this->getOutputInterface()->writeln([
+            $this->getConfig()['version'],
             DEPS_PHP_PATH,
             $this->buildInstallationDirectoryName()
         ]);
@@ -36,18 +37,12 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
 
     private function buildInstallationDirectoryName()
     {
-        $folderName = $this->getConfig()['version'];
+        $dir = $this->getConfig()['version'];
+        $dir .= $this->getConfig()['ts'] ? '-ts' : '-nts';
+        $dir .= '-' . $this->getConfig()['archType'];
+        $dir .= '-' . $this->getConfig()['osType'];
 
-        if ($this->getConfig()['ts']) {
-            $folderName .= '-ts';
-        } else {
-            $folderName .= '-nts';
-        }
-
-        $folderName .= '-'. $this->getConfig()['archType'];
-        $folderName .= $this->getConfig()['osType'];
-
-        return $folderName;
+        return $dir;
     }
 
 
