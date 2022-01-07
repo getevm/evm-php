@@ -12,7 +12,7 @@ use Getevm\Evm\Services\OSHelper;
 use Symfony\Component\Console\Application;
 
 define('DEPS_PATH', OSHelper::getPathToDeps());
-define('DEPS_PHP_PATH', OSHelper::getPathToDeps() . '/php');
+define('DEPS_PHP_PATH', OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php');
 
 /**
  * - evm php install 7.4.0
