@@ -6,7 +6,6 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Process\Process;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -19,23 +18,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $this->createPathToDeps();
         $releaseUrl = $this->getReleaseUrl();
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
-        $outputFileName = $this->buildOutputFileName($ext);
-
-        $process = new Process(['echo %Path%']);
-
-        $outputInterface = $this->getOutputInterface();
-
-        $process->run(function ($type, $buffer) use ($outputInterface) {
-            if (Process::ERR === $type) {
-                $outputInterface->writeln([$buffer]);
-
-                return;
-            }
-
-            $outputInterface->writeln([
-               $buffer
-            ]);
-        });
+        $outputZipFile = $this->buildOutputFileName($ext);
 
         if (!$releaseUrl) {
             $this->getOutputInterface()->writeln('Failed to get release from OS.');
@@ -51,18 +34,32 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return Command::INVALID;
         }
 
-        $outputPath = $this->getOutputPath($outputFileName);
-        file_put_contents($outputPath . '/' . $outputFileName, $response->getBody());
-        $this->getOutputInterface()->writeln('Downloaded to ' . $outputPath);
+        $outputFolderPath = $this->getOutputPath($outputZipFile);
+
+        $pathToZip = $outputFolderPath . '/' . $outputZipFile;
+        file_put_contents($pathToZip, $response->getBody());
+        $this->getOutputInterface()->writeln('Downloaded to ' . $pathToZip);
 
         $zip = new \ZipArchive();
 
-        $zip->open($outputPath . '/' . $outputFileName);
-        $zip->extractTo($outputPath);
+        $zip->open($pathToZip);
+        $zip->extractTo($outputFolderPath);
         $zip->close();
 
-        unlink($outputPath . '/' . $outputFileName);
+        unlink($pathToZip);
 
+        $this->getOutputInterface()->writeln([
+            'Unzipped to ' . $outputFolderPath
+        ]);
+
+        $log = [];
+
+        $path = $this->getPathVariable();
+
+        $log[] = $path;
+
+        file_put_contents($this->getPathToDeps() . '/' . date() . '.json', json_encode($log));
+        
         return Command::SUCCESS;
     }
 
@@ -147,6 +144,20 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         if ($pathToPhpDeps && !is_dir($pathToPhpDeps)) {
             mkdir($pathToPhpDeps, null, true);
+        }
+    }
+
+    private function getPathVariable()
+    {
+        switch (SystemService::getOS()) {
+            case SystemService::OS_WIN:
+                exec('echo %Path%', $output);
+                return explode(';', $output[0]);
+
+            case SystemService::OS_LINUX:
+            case SystemService::OS_OSX:
+                exec('echo $PATH', $output);
+                return explode(':', $output[0]);
         }
     }
 }
