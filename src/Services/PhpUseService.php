@@ -48,8 +48,13 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
 
         $pathToBatchFile = '"' . __DIR__ . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
 
+        $this->getOutputInterface()->writeln([
+            $pathToBatchFile,
+            implode(';', $newPaths)
+        ]);
+
         exec(
-            'cmd.exe /c ' . $pathToBatchFile . ' "' . implode(';', $newPaths) . '"',
+            'cmd /c ' . $pathToBatchFile . ' "' . implode(';', $newPaths) . '"',
             $output
         );
 
