@@ -12,6 +12,7 @@ use Getevm\Evm\Services\OSHelper;
 use Symfony\Component\Console\Application;
 
 define('DEPS_PATH', OSHelper::getPathToDeps());
+define('LOGS_PATH', OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'logs');
 
 /**
  * - evm php install 7.4.0
