@@ -46,7 +46,7 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         $pathToLogs = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'logs';
         $fileName = date('YmdHis') . '_' . $installationDirName . '.json';
 
-        $pathToBatchFile = '"' . __DIR__ . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
+        $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
 
         $this->getOutputInterface()->writeln([
             $pathToBatchFile,
