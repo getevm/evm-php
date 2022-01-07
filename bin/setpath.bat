@@ -7,11 +7,11 @@ set OldInstallDir=%1
 set NewInstallDir=%2
 
 if "%OldInstallDir%" == "" (
-    echo "Old installation directory missing. Exiting."
+    echo Old installation directory missing. Exiting.
     pause
 ) else (
     if "%NewInstallDir%" == "" (
-        echo "New installation directory missing. Exiting."
+        echo New installation directory missing. Exiting.
         pause
     ) else (
         set OldPath=%Path%
