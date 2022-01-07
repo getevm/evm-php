@@ -21,7 +21,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             'Thread Safety: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
         ]);
 
-        $this->createRootInstallationDirectory();
+        $this->createPrerequisiteDirectories();
 
         $this->getOutputInterface()->writeln([
             'Finding appropriate release.'
@@ -183,7 +183,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function getOutputPath($outputFileName)
     {
-        $outputPath = OSHelper::getPathToDeps() . '/php/' . pathinfo($outputFileName, PATHINFO_FILENAME);
+        $outputPath = realpath(OSHelper::getPathToDeps() . '/php/' . pathinfo($outputFileName, PATHINFO_FILENAME));
 
         if (!is_dir($outputPath)) {
             mkdir($outputPath, null, true);
@@ -192,12 +192,19 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         return $outputPath;
     }
 
-    private function createRootInstallationDirectory()
+    private function createPrerequisiteDirectories()
     {
-        $path = OSHelper::getPathToDeps() . '/php';
+        $dirs = [
+            realpath(OSHelper::getPathToDeps() . '/php'),
+            realpath(OSHelper::getPathToDeps() . '/php/logs')
+        ];
 
-        if (!is_dir($path)) {
-            mkdir($path, null, true);
+        foreach ($dirs as $dir) {
+            if (is_dir($dir)) {
+                continue;
+            }
+
+            mkdir($dir, null, true);
         }
     }
 }
