@@ -10,10 +10,11 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
 {
     public function execute()
     {
-        $log = [];
-        $installationDir = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName();
+        $logs = [];
+        $installationDirName = $this->buildInstallationDirectoryName();
+        $installationDirPath = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $installationDirName;
 
-        if (!is_dir($installationDir)) {
+        if (!is_dir($installationDirPath)) {
             $this->getOutputInterface()->writeln([
                 'This release hasn\'t been installed.'
             ]);
@@ -22,27 +23,30 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         }
 
         $this->getOutputInterface()->writeln([
-            $installationDir
+            $installationDirPath
         ]);
 
         $oldPaths = array_map(function ($path) {
             return realpath($path);
         }, $this->getPathVariable());
 
-        $newPaths = array_map(function ($path) use ($installationDir) {
+        $newPaths = array_map(function ($path) use ($installationDirPath) {
             $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR . pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
 
             if ($path !== $phpBinaryWithoutExt) {
                 return realpath($path);
             }
 
-            return realpath($installationDir);
+            return realpath($installationDirPath);
         }, $oldPaths);
 
-        $log['oldPaths'] = $oldPaths;
-        $log['newPaths'] = $newPaths;
+        $logs['oldPaths'] = $oldPaths;
+        $logs['newPaths'] = $newPaths;
 
-        file_put_contents($this->getPathToDeps() . '/' . time() . '.json', json_encode($log));
+        $pathToLogs = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'logs';
+        $fileName = $installationDirName . '.json';
+
+        file_put_contents($pathToLogs . DIRECTORY_SEPARATOR . $fileName, json_encode($logs));
 
         return Command::SUCCESS;
     }
