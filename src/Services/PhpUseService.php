@@ -22,10 +22,6 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
             return Command::FAILURE;
         }
 
-        $this->getOutputInterface()->writeln([
-            $installationDirPath
-        ]);
-
         $oldPaths = array_map(function ($path) {
             return realpath($path);
         }, $this->getPathVariable());
@@ -49,8 +45,8 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
 
         $this->getOutputInterface()->writeln([
-            $pathToBatchFile,
-            implode(';', $newPaths),
+//            $pathToBatchFile,
+//            implode(';', $newPaths),
             ('cmd /c ' . ($pathToBatchFile) . ' "' . (implode(';', $newPaths)) . '"')
         ]);
 
