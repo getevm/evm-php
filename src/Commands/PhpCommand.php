@@ -38,7 +38,7 @@ class PhpCommand extends Command
 
                 return (new PhpInstallService($output, [
                     'version' => $version,
-                    'ts' => ,
+                    'ts' => $input->getOption('ts'),
                     'archType' => $input->getOption('archType'),
                     'os' => SystemService::toString(),
                     'osType' => $input->getOption('osType'),
