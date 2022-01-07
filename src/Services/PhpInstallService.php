@@ -100,7 +100,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             $fileName .= '-' . $this->getConfig()['archType'];
         }
 
-        $fileName .= '-' . SystemService::toString();
+        $fileName .= '-' . $this->getConfig()['osType'];
         $fileName .= '.' . $ext;
 
         return $fileName;
