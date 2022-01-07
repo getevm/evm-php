@@ -21,7 +21,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
         $outputFileName = $this->buildOutputFileName($ext);
 
-        $process = new Process(['ls', '-lsa']);
+        $process = new Process(['echo', '%PATH%']);
 
         $outputInterface = $this->getOutputInterface();
 
