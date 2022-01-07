@@ -15,18 +15,32 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
+        $this->getOutputInterface()->writeln([
+            'OS: ' . $this->getConfig()['os'],
+            'OS Type: ' . $this->getConfig()['osType'],
+            'Architecture: ' . $this->getConfig()['archType'],
+            'Thread Safety: ' . $this->getConfig()['ts'] ? 'Yes' : 'No'
+        ]);
+
         $this->createRootInstallationDirectory();
 
+        $this->getOutputInterface()->writeln([
+            'Finding appropriate release...'
+        ]);
+
         $releaseUrl = $this->getReleaseUrl();
-        $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
-        $outputZipFile = $this->buildOutputFileName($ext);
 
         if (!$releaseUrl) {
-            $this->getOutputInterface()->writeln('Failed to get release from OS.');
+            $this->getOutputInterface()->writeln('Failed to find release.');
             return Command::FAILURE;
         }
 
-        $this->getOutputInterface()->writeln('Attempting to download from ' . $releaseUrl . ' (' . SystemService::toString() . ')');
+        $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
+        $outputZipFile = $this->buildOutputFileName($ext);
+
+        $this->getOutputInterface()->writeln([
+            'Release found, attempting to download from ' . $releaseUrl
+        ]);
 
         $response = $this->getGuzzle()->get($releaseUrl);
 
@@ -42,30 +56,30 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $this->getOutputInterface()->writeln('Downloaded to ' . $pathToZip);
 
         $zip = new \ZipArchive();
-
         $zip->open($pathToZip);
         $zip->extractTo($outputFolderPath);
         $zip->close();
 
-        unlink($pathToZip);
-
         $this->getOutputInterface()->writeln([
             'Unzipped to ' . $outputFolderPath
         ]);
+
+        unlink($pathToZip);
 
         return Command::SUCCESS;
     }
 
     private function getUnixReleaseUrl()
     {
-        return 'https://museum.php.net/php8/php-' . $this->getConfig()['version'] . '.tar.gz';
+        $majorVersion = explode('.', $this->getConfig()['version'])[0];
+        return 'https://museum.php.net/php' . $majorVersion . '/php-' . $this->getConfig()['version'] . '.tar.gz';
     }
 
     private function getWindowsReleaseUrl()
     {
         $url = 'https://windows.php.net/downloads/releases/archives/php-';
         $url .= $this->getConfig()['version'];
-        $url .= $this->getConfig()['nts'] ? '-nts' : '';
+        $url .= !$this->getConfig()['ts'] ? '-nts' : '';
         $url .= '-Win32-vs16-';
         $url .= $this->getConfig()['archType'];
         $url .= '.zip';
@@ -77,7 +91,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     {
         $fileName = $this->getConfig()['version'];
 
-        if ($this->getConfig()['nts']) {
+        if (!$this->getConfig()['ts']) {
             $fileName .= '-nts';
         }
 

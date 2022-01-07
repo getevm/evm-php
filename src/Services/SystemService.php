@@ -36,4 +36,24 @@ class SystemService
             self::OS_OSX => 'OSX'
         ][self::getOS()];
     }
+
+    public static function getArchType()
+    {
+        return PHP_INT_SIZE === 8 ? 'x64' : 'x86';
+    }
+
+    public static function getOSType()
+    {
+        switch (SystemService::getOS()) {
+            case SystemService::OS_WIN:
+                return 'nt';
+
+            case SystemService::OS_LINUX:
+            case SystemService::OS_OSX:
+                return 'nix';
+
+            default:
+                return null;
+        }
+    }
 }
