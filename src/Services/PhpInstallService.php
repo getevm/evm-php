@@ -6,6 +6,7 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Process\Process;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -21,8 +22,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $outputFileName = $this->buildOutputFileName($ext);
 
         $this->getOutputInterface()->writeln([
-            PHP_BINARY,
-            PHP_BINDIR
+            (new Process('echo %PATH%'))->getOutput()
         ]);
 
         if (!$releaseUrl) {
