@@ -16,8 +16,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     public function execute()
     {
         $this->getOutputInterface()->writeln([
-            'OS: ' . $this->getConfig()['os'],
-            'OS Type: ' . $this->getConfig()['osType'],
+            'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
             'Thread Safety: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
         ]);
@@ -107,13 +106,32 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     public function getReleaseUrl()
     {
-        if (in_array(SystemService::getOS(), [SystemService::OS_LINUX, SystemService::OS_OSX])) {
-            return $this->getUnixReleaseUrl();
-        } else if (SystemService::getOS() === SystemService::OS_WIN) {
-            return $this->getWindowsReleaseUrl();
+        return $this->findRelease();
+    }
+
+    private function findRelease()
+    {
+        $osType = $this->getConfig()['osType'];
+        $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$osType];
+        $release = array_filter($releasesByOSType, function ($release) {
+            $versionCheck = strpos($release, 'php-' . $this->getConfig()['version']) !== false;
+            $archTypeCheck = strpos($release, '-' . $this->getConfig()['archType']) !== false;
+            $ntsCheck = $this->getConfig()['ts'] ? strpos($release, '-nts-') === false : strpos($release, '-nts-') !== false;
+
+            return $versionCheck && $archTypeCheck && $ntsCheck;
+        });
+
+        if (empty($release)) {
+            return null;
         }
 
-        return null;
+        if ($osType === 'nt') {
+            return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
+        } else if ($osType === 'nix') {
+            return '';
+        } else {
+            return null;
+        }
     }
 
     private function getOutputPath($outputFileName)
