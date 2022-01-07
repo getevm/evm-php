@@ -6,6 +6,7 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -74,7 +75,14 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             'Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.'
         ]);
 
-        return Command::SUCCESS;
+        $helper = $this->getCommand()->getHelper('question');
+        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
+
+        if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
+            return Command::SUCCESS;
+        }
+
+        return (new PhpUseService($this->getOutputInterface(), $this->getConfig()))->execute();
     }
 
     private function getUnixReleaseUrl()

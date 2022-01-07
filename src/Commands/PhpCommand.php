@@ -34,7 +34,7 @@ class PhpCommand extends Command
 
         switch ($cmd) {
             case 'install':
-                return (new PhpInstallService($output, [
+                return (new PhpInstallService($this, $input, $output, [
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
                     'archType' => $input->getOption('archType'),
