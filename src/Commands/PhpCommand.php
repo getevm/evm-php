@@ -36,6 +36,16 @@ class PhpCommand extends Command
             case 'install':
                 $version = $input->getArgument('version');
 
+                $output->writeln(json_encode([
+                    'version' => $version,
+                    'ts' => $input->getOption('ts'),
+                    'archType' => $input->getOption('archType'),
+                    'os' => SystemService::toString(),
+                    'osType' => $input->getOption('osType'),
+                ]));
+
+                return Command::SUCCESS;
+
                 return (new PhpInstallService($output, [
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
