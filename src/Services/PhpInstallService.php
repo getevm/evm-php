@@ -111,20 +111,23 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function findRelease()
     {
+        $outputInterface = $this->getOutputInterface();
         $config = $this->getConfig();
         $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$config['osType']];
 
         switch ($config['osType']) {
             case 'nt':
-                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config) {
+                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $outputInterface) {
                     $fileName = pathinfo($release, PATHINFO_FILENAME);
+
+                    $outputInterface->writeln([
+                       $fileName
+                    ]);
 
                     if (strpos($fileName, '-nts-') === false) {
                         list($php, $version, $win, $vcvs, $archType) = explode('-', $fileName);
-
                     } else {
                         list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileName);
-
                     }
 
                     $versionCheck = $version === $config['version'];
