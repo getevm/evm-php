@@ -8,11 +8,11 @@ class OSHelper
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
-                return $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . '/evm';
+                return $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . DIRECTORY_SEPARATOR . 'evm';
 
             case SystemService::OS_LINUX:
             case SystemService::OS_OSX:
-                return $_SERVER['HOME'] . '/evm';
+                return $_SERVER['HOME'] . DIRECTORY_SEPARATOR . 'evm';
 
             default:
                 return null;
