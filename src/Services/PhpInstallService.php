@@ -195,11 +195,9 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     private function createPrerequisiteDirectories()
     {
         $dirs = [
-            realpath(OSHelper::getPathToDeps() . '/php'),
-            realpath(OSHelper::getPathToDeps() . '/php/logs')
+            OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php',
+            OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'logs'
         ];
-
-        $this->getOutputInterface()->writeln(json_encode($dirs));
 
         foreach ($dirs as $dir) {
             if (is_dir($dir)) {
