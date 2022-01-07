@@ -18,6 +18,8 @@ if "%OldInstallDir%" == "" (
         set NewPath=!OldPath:%OldInstallDir%=!
         set NewPathWithNewInstallDir=!%NewPath%%NewInstallDir%!
 
+        echo %NewPathWithNewInstallDir%
+
         setx /m "%KeyName%" "%NewPathWithNewInstallDir%";
 
         pause
