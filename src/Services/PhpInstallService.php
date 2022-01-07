@@ -27,6 +27,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $process->run(function ($type, $buffer) use ($outputInterface) {
             if (Process::ERR === $type) {
+                $outputInterface->writeln(['error']);
+
                 return;
             }
 
