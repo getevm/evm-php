@@ -111,12 +111,12 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function findRelease()
     {
-        $osType = $this->getConfig()['osType'];
-        $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$osType];
-        $release = array_filter($releasesByOSType, function ($release) {
-            $versionCheck = strpos($release, 'php-' . $this->getConfig()['version']) !== false;
-            $archTypeCheck = strpos($release, '-' . $this->getConfig()['archType']) !== false;
-            $ntsCheck = $this->getConfig()['ts'] ? strpos($release, '-nts-') === false : strpos($release, '-nts-') !== false;
+        $config = $this->getConfig();
+        $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$config['osType']];
+        $release = array_filter($releasesByOSType, function ($release) use ($config) {
+            $versionCheck = strpos($release, 'php-' . $config['version']) !== false;
+            $archTypeCheck = strpos($release, '-' . $config['archType']) !== false;
+            $ntsCheck = $config['ts'] ? strpos($release, '-nts-') === false : strpos($release, '-nts-') !== false;
 
             return $versionCheck && $archTypeCheck && $ntsCheck;
         });
@@ -125,9 +125,9 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return null;
         }
 
-        if ($osType === 'nt') {
+        if ($config['osType'] === 'nt') {
             return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
-        } else if ($osType === 'nix') {
+        } else if ($config['osType'] === 'nix') {
             return '';
         } else {
             return null;
