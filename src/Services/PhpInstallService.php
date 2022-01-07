@@ -22,11 +22,18 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $outputFileName = $this->buildOutputFileName($ext);
 
         $process = new Process(['echo %PATH%']);
-        $process->run();
 
-        $this->getOutputInterface()->writeln([
-            $process->getOutput()
-        ]);
+        $outputInterface = $this->getOutputInterface();
+
+        $process->run(function ($type, $buffer) use ($outputInterface) {
+            if (Process::ERR === $type) {
+                return;
+            }
+
+            $outputInterface->writeln([
+               $buffer
+            ]);
+        });
 
         if (!$releaseUrl) {
             $this->getOutputInterface()->writeln('Failed to get release from OS.');
