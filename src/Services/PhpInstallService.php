@@ -123,8 +123,12 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
                     $fileName = pathinfo($release, PATHINFO_FILENAME);
 
                     if (strpos($fileName, '-nts-') === false) {
+                        $outputInterface->writeln(['ts', json_encode(explode('-', $fileName))]);
+
                         list($php, $version, $win, $vcvs, $archType) = explode('-', $fileName);
                     } else {
+                        $outputInterface->writeln(['nts', json_encode(explode('-', $fileName))]);
+
                         list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileName);
                     }
 
