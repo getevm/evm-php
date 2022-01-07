@@ -152,15 +152,15 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
          */
         if (strpos($fileNameWithoutExt, 'x64') === false && strpos($fileNameWithoutExt, 'x86') === false) {
             if ($isNtsRelease) {
-                list($php, $version, $nts) = explode('-', $fileNameWithoutExt);
+                list(, $version, $nts) = explode('-', $fileNameWithoutExt);
             } else {
-                list($php, $version) = explode('-', $fileNameWithoutExt);
+                list(, $version) = explode('-', $fileNameWithoutExt);
             }
         } else {
             if ($isNtsRelease) {
-                list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileNameWithoutExt);
+                list(, $version, $nts, , , $archType) = explode('-', $fileNameWithoutExt);
             } else {
-                list($php, $version, $win, $vcvs, $archType) = explode('-', $fileNameWithoutExt);
+                list(, $version, , , $archType) = explode('-', $fileNameWithoutExt);
             }
         }
 
