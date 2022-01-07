@@ -199,6 +199,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             realpath(OSHelper::getPathToDeps() . '/php/logs')
         ];
 
+        $this->getOutputInterface()->writeln(json_encode($dirs));
+
         foreach ($dirs as $dir) {
             if (is_dir($dir)) {
                 continue;
