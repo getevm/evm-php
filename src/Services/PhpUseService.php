@@ -13,7 +13,7 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         $logs = [];
         $installationDirName = $this->buildInstallationDirectoryName();
         $oldInstallationDirPath = null;
-        $newInstallationDirPath = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $installationDirName;
+        $newInstallationDirPath = DEPS_PATH . DIRECTORY_SEPARATOR . $installationDirName;
 
         if (!is_dir($newInstallationDirPath)) {
             $this->getOutputInterface()->writeln([
