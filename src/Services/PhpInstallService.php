@@ -121,6 +121,13 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return $versionCheck && $archTypeCheck && $ntsCheck;
         });
 
+        $this->getOutputInterface()->writeln([
+            json_encode([
+                $releasesByOSType,
+                $release
+            ])
+        ]);
+
         if (empty($release)) {
             return null;
         }
