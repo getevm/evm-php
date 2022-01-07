@@ -113,31 +113,34 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     {
         $config = $this->getConfig();
         $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$config['osType']];
-        $release = array_filter($releasesByOSType, function ($release) use ($config) {
-            $versionCheck = strpos($release, 'php-' . $config['version']) !== false;
-            $archTypeCheck = strpos($release, '-' . $config['archType']) !== false;
-            $ntsCheck = $config['ts'] ? strpos($release, '-nts-') === false : strpos($release, '-nts-') !== false;
 
-            return $versionCheck && $archTypeCheck && $ntsCheck;
-        });
+        switch ($config['osType']) {
+            case 'nt':
+                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config) {
+                    if ($config['ts']) {
+                        list($php, $version, $win, $vcvs, $archType) = explode('-', pathinfo($release, PATHINFO_FILENAME));
+                    } else {
+                        list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', pathinfo($release, PATHINFO_FILENAME));
+                    }
 
-        $this->getOutputInterface()->writeln([
-            json_encode([
-                $releasesByOSType,
-                $release
-            ])
-        ]);
+                    $versionCheck = $version === $config['version'];
+                    $archTypeCheck = $archType === $config['archType'];
+                    $ntsCheck = !$config['ts'] && isset($nts) && $nts === 'nts';
 
-        if (empty($release)) {
-            return null;
-        }
+                    return $versionCheck && $archTypeCheck && $ntsCheck;
+                }));
 
-        if ($config['osType'] === 'nt') {
-            return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
-        } else if ($config['osType'] === 'nix') {
-            return '';
-        } else {
-            return null;
+                if (empty($release)) {
+                    return null;
+                }
+
+                return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
+
+            case 'nix':
+                return ' ';
+
+            default:
+                return null;
         }
     }
 
