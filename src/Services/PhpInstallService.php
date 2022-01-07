@@ -183,7 +183,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function getOutputPath($outputFileName)
     {
-        $outputPath = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . pathinfo($outputFileName, PATHINFO_FILENAME);
+        $outputPath = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . pathinfo($outputFileName, PATHINFO_FILENAME);
 
         if (!is_dir($outputPath)) {
             mkdir($outputPath, null, true);
@@ -195,8 +195,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     private function createPrerequisiteDirectories()
     {
         $dirs = [
-            OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php',
-            OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'logs'
+            OSHelper::getPathToDeps(),
+            OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'logs'
         ];
 
         foreach ($dirs as $dir) {
