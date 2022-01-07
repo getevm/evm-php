@@ -8,6 +8,6 @@ echo "%KeyName%"
 echo "%OldPath%"
 echo "%NewPath%"
 
-setx /m "%KeyName%" "%NewName%"
+setx /m "%KeyName%" "%NewPath%"
 pause
 
