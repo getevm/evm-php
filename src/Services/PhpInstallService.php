@@ -55,7 +55,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $log = [];
 
         $paths = array_map(function ($path) use ($outputFolderPath) {
-            $phpBinaryWithoutExt = pathinfo(PHP_BINARY, PATHINFO_BASENAME);
+            $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR.pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
 
             if ($path !== $phpBinaryWithoutExt) {
                 return $path;
@@ -64,8 +64,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             return $outputFolderPath;
         }, $this->getPathVariable());
 
-        $log['old_paths'] = $this->getPathVariable();
-        $log['new_paths'] = $paths;
+        $log['oldPaths'] = $this->getPathVariable();
+        $log['newPaths'] = $paths;
 
         file_put_contents($this->getPathToDeps() . '/' . time() . '.json', json_encode($log));
 
