@@ -20,10 +20,10 @@ class PhpCommand extends Command
             ->setName('php')
             ->setDescription('Manage your PHP environment')
             ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
-            ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version')
-            ->addOption('ts', null, InputOption::VALUE_NONE, 'Non thread safe?')
-            ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Architecture type?', SystemService::getArchType())
-            ->addOption('osType', null, InputOption::VALUE_REQUIRED, 'Get release for specific OS Type', SystemService::getOSType());
+            ->addArgument('version', InputArgument::OPTIONAL, 'Specify the release version')
+            ->addOption('ts', null, InputOption::VALUE_NONE, 'Get a thread safe release (default nts)')
+            ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Get a release targeting an architecture type (x64/x86)', SystemService::getArchType())
+            ->addOption('osType', null, InputOption::VALUE_REQUIRED, 'Get a release targeting an OS type (nt/nix)', SystemService::getOSType());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
