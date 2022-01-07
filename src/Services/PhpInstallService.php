@@ -113,32 +113,22 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function findRelease()
     {
-        $outputInterface = $this->getOutputInterface();
+        $self = $this;
         $config = $this->getConfig();
         $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$config['osType']];
 
         switch ($config['osType']) {
             case 'nt':
-                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $outputInterface) {
-                    $fileName = pathinfo($release, PATHINFO_FILENAME);
+                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
+                    $releaseMetadata = $self->getMetadataFromReleaseNameNT($release);
+                    $versionCheck = $releaseMetadata['version'] === $config['version'];
+                    $archTypeCheck = $releaseMetadata['archType'] === null || $releaseMetadata['archType'] === $config['archType'];
+                    $tsCheck = $releaseMetadata['ts'] === $config['ts'];
 
-                    if (strpos($fileName, '-nts-') === false) {
-                        $outputInterface->writeln(['ts', json_encode(explode('-', $fileName))]);
-
-                        list($php, $version, $win, $vcvs, $archType) = explode('-', $fileName);
-                    } else {
-                        $outputInterface->writeln(['nts', json_encode(explode('-', $fileName))]);
-
-                        list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileName);
-                    }
-
-                    $versionCheck = $version === $config['version'];
-                    $archTypeCheck = $archType === $config['archType'];
-
-                    return $versionCheck && $archTypeCheck && ($config['ts'] ? isset($nts) && $nts === 'nts' : !isset($nts));
+                    return $versionCheck && $archTypeCheck && $tsCheck;
                 }));
 
-                if (empty($release)) {
+                if (empty($release) || count($release) > 1) {
                     return null;
                 }
 
@@ -150,6 +140,36 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             default:
                 return null;
         }
+    }
+
+    private function getMetadataFromReleaseNameNT($release)
+    {
+        $fileNameWithoutExt = pathinfo($release, PATHINFO_FILENAME);
+        $isNtsRelease = strpos($release, '-nts-') !== false;
+
+        /**
+         * Some installations don't have arch type
+         */
+        if (strpos($fileNameWithoutExt, 'x64') === false && strpos($fileNameWithoutExt, 'x86') === false) {
+            if ($isNtsRelease) {
+                list($php, $version, $nts) = explode('-', $fileNameWithoutExt);
+            } else {
+                list($php, $version) = explode('-', $fileNameWithoutExt);
+            }
+        } else {
+            if ($isNtsRelease) {
+                list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileNameWithoutExt);
+            } else {
+                list($php, $version, $win, $vcvs, $archType) = explode('-', $fileNameWithoutExt);
+            }
+        }
+
+        return [
+            'version' => $version,
+            'ts' => !isset($nts),
+            'archType' => isset($archType) ? $archType : null,
+            'ext' => pathinfo($release, PATHINFO_EXTENSION),
+        ];
     }
 
     private function getOutputPath($outputFileName)
