@@ -13,20 +13,32 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         $log = [];
         $installationDir = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName();
 
+        if (!is_dir($installationDir)) {
+            $this->getOutputInterface()->writeln([
+                'This release hasn\'t been installed.'
+            ]);
+
+            return Command::FAILURE;
+        }
+
         $this->getOutputInterface()->writeln([
             $installationDir
         ]);
 
-//        $paths = array_map(function ($path) use ($outputFolderPath) {
-//            $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR . pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
-//
-//            if ($path !== $phpBinaryWithoutExt) {
-//                return $path;
-//            }
-//
-//            return $outputFolderPath;
-//        }, $this->getPathVariable());
-//
+        $paths = array_map(function ($path) use ($installationDir) {
+            $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR . pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
+
+            if ($path !== $phpBinaryWithoutExt) {
+                return realpath($path);
+            }
+
+            return realpath($installationDir);
+        }, $this->getPathVariable());
+
+        $this->getOutputInterface()->writeln([
+            implode(';', $paths)
+        ]);
+
 //        $log['oldPaths'] = $this->getPathVariable();
 //        $log['newPaths'] = $paths;
 //
@@ -44,7 +56,6 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
 
         return $dir;
     }
-
 
     private function getPathVariable()
     {
