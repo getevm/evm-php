@@ -1,11 +1,13 @@
 @echo off
 
 set KeyName=DERP
-set KeyValue=%1
+set OldPath=%1
+set NewPath=%2
 
-if "%KeyValue%" == "" ( echo Path value not set. ) else (
+if "%OldPath%" == "" if "%NewPath%" == "" ( echo Path value not set. ) else (
     echo "%KeyName%"
-    echo "%KeyValue%"
+    echo "%OldPath%"
+    echo "%NewPath%"
 
     setx /m "%KeyName%" "%KeyValue%"
 )

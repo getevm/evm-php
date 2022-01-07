@@ -12,9 +12,10 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
     {
         $logs = [];
         $installationDirName = $this->buildInstallationDirectoryName();
-        $installationDirPath = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $installationDirName;
+        $oldInstallationDirPath = null;
+        $newInstallationDirPath = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $installationDirName;
 
-        if (!is_dir($installationDirPath)) {
+        if (!is_dir($newInstallationDirPath)) {
             $this->getOutputInterface()->writeln([
                 'This release hasn\'t been installed.'
             ]);
@@ -26,14 +27,16 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
             return realpath($path);
         }, $this->getPathVariable());
 
-        $newPaths = array_map(function ($path) use ($installationDirPath) {
+        $newPaths = array_map(function ($path) use ($newInstallationDirPath, &$oldInstallationDirPath) {
             $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR . pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
 
             if ($path !== $phpBinaryWithoutExt) {
                 return realpath($path);
             }
 
-            return realpath($installationDirPath);
+            $oldInstallationDirPath = $path;
+
+            return realpath($newInstallationDirPath);
         }, $oldPaths);
 
         $logs['oldPaths'] = $oldPaths;
@@ -44,7 +47,7 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
 
         $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
 
-        exec($pathToBatchFile . ' "' . $installationDirPath . '"', $output);
+        exec($pathToBatchFile . '"' . $oldInstallationDirPath . '" ' . ' "' . $newInstallationDirPath . '"', $output);
         $logs['output'] = $output;
 
         file_put_contents($pathToLogs . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
