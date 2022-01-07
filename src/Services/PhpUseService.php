@@ -11,10 +11,10 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
     public function execute()
     {
         $log = [];
+        $installationDir = DEPS_PHP_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName();
+
         $this->getOutputInterface()->writeln([
-            $this->getConfig()['version'],
-            DEPS_PHP_PATH,
-            $this->buildInstallationDirectoryName()
+            $installationDir
         ]);
 
 //        $paths = array_map(function ($path) use ($outputFolderPath) {
