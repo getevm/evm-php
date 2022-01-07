@@ -24,13 +24,13 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $this->createRootInstallationDirectory();
 
         $this->getOutputInterface()->writeln([
-            'Finding appropriate release...'
+            'Finding appropriate release.'
         ]);
 
         $releaseUrl = $this->getReleaseUrl();
 
         if (!$releaseUrl) {
-            $this->getOutputInterface()->writeln('Failed to find release.');
+            $this->getOutputInterface()->writeln(['Failed to find release.']);
             return Command::FAILURE;
         }
 
@@ -38,13 +38,15 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $outputZipFile = $this->buildOutputFileName($ext);
 
         $this->getOutputInterface()->writeln([
-            'Release found, attempting to download from ' . $releaseUrl
+            'Release found attempting to download from ' . $releaseUrl . '.'
         ]);
 
         $response = $this->getGuzzle()->get($releaseUrl);
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
-            $this->getOutputInterface()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
+            $this->getOutputInterface()->writeln([
+                'Failed to download release.'
+            ]);
             return Command::INVALID;
         }
 
@@ -52,7 +54,10 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $pathToZip = $outputFolderPath . '/' . $outputZipFile;
         file_put_contents($pathToZip, $response->getBody());
-        $this->getOutputInterface()->writeln('Downloaded to ' . $pathToZip);
+
+        $this->getOutputInterface()->writeln([
+            'Downloaded to ' . $pathToZip . '.'
+        ]);
 
         $zip = new \ZipArchive();
         $zip->open($pathToZip);
@@ -60,10 +65,14 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $zip->close();
 
         $this->getOutputInterface()->writeln([
-            'Unzipped to ' . $outputFolderPath
+            'Unzipped to ' . $outputFolderPath . '. Cleaning up downloaded files.'
         ]);
 
         unlink($pathToZip);
+
+        $this->getOutputInterface()->writeln([
+            'Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.'
+        ]);
 
         return Command::SUCCESS;
     }
