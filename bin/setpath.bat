@@ -9,6 +9,6 @@ if "%OldPath%" == "" if "%NewPath%" == "" ( echo Path value not set. ) else (
     echo "%OldPath%"
     echo "%NewPath%"
 
-    setx /m "%KeyName%" "%KeyValue%"
+    setx /m "%KeyName%" "%NewName%"
 )
 
