@@ -19,7 +19,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             'OS: ' . $this->getConfig()['os'],
             'OS Type: ' . $this->getConfig()['osType'],
             'Architecture: ' . $this->getConfig()['archType'],
-            'Thread Safety: ' . $this->getConfig()['ts'] ? 'Yes' : 'No'
+            'Thread Safety: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
         ]);
 
         $this->createRootInstallationDirectory();
