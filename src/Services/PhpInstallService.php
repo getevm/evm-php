@@ -8,6 +8,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use ZipArchive;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -17,17 +18,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
-        $helper = $this->getCommand()->getHelper('question');
-        $exts = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts'];
-        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', array_merge(['none'], array_values($exts)), null);
-        $extsQuestions->setMultiselect(true);
-        $extsQuestions->setAutocompleterValues(array_merge(['none'], array_values($exts)));
-        $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
-
-        if (!is_null($extsToEnable)) {
-            $this->getOutputInterface()->writeln($extsToEnable);
-        }
-
         $this->getOutputInterface()->writeln([
             'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
@@ -60,6 +50,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             $this->getOutputInterface()->writeln([
                 'Failed to download release.'
             ]);
+
             return Command::INVALID;
         }
 
@@ -72,7 +63,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             'Downloaded to ' . $pathToZip . '.'
         ]);
 
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         $zip->open($pathToZip);
         $zip->extractTo($outputFolderPath);
         $zip->close();
