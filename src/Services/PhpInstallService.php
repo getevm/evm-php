@@ -90,7 +90,9 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     {
         $fileName = $this->getConfig()['version'];
 
-        if (!$this->getConfig()['ts']) {
+        if ($this->getConfig()['ts']) {
+            $fileName .= '-ts';
+        } else {
             $fileName .= '-nts';
         }
 
