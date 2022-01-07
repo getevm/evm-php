@@ -30,11 +30,10 @@ class PhpCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $cmd = $input->getArgument('cmd');
+        $version = $input->getArgument('version');
 
         switch ($cmd) {
             case 'install':
-                $version = $input->getArgument('version');
-
                 return (new PhpInstallService($output, [
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
@@ -44,8 +43,6 @@ class PhpCommand extends Command
                 ]))->execute();
 
             case 'use':
-                $version = $input->getOption('version');
-
                 return (new PhpUseService($output, [
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
