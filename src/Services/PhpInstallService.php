@@ -91,6 +91,19 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
             rename($iniFilePath . 'php.ini-production', $iniFilePath . 'php.ini');
             copy($iniFilePath . 'php.ini', $iniFilePath . 'php.ini.bak');
+
+            $iniFile = file_get_contents($iniFilePath . 'php.ini');
+            $extsToEnable = $extsToEnable[0] === 'all' ? $exts : $extsToEnable;
+
+            foreach ($extsToEnable as $ext) {
+                $extNeedle = ';extension=' . $ext;
+
+                if (strpos($iniFile, $extNeedle) !== false) {
+                    $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
+                }
+            }
+
+            file_put_contents($iniFilePath . 'php.ini', $iniFile);
         }
 
         $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
