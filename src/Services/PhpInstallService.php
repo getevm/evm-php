@@ -121,6 +121,9 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             case 'nt':
                 $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
                     $releaseMetadata = $self->getMetadataFromReleaseNameNT($release);
+
+                    $self->getOutputInterface()->writeln(json_encode($releaseMetadata));
+
                     $versionCheck = $releaseMetadata['version'] === $config['version'];
                     $archTypeCheck = $releaseMetadata['archType'] === null || $releaseMetadata['archType'] === $config['archType'];
                     $tsCheck = $releaseMetadata['ts'] === $config['ts'];
