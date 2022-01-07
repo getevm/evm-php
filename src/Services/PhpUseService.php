@@ -51,15 +51,15 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         $this->getOutputInterface()->writeln([
             $pathToBatchFile,
             implode(';', $newPaths),
-            ('cmd /c ' . $pathToBatchFile . ' "' . implode(';', $newPaths) . '"')
+            'cmd /c ' . ($pathToBatchFile) . ' "' . (implode(';', $newPaths)) . '"'
         ]);
 
-        exec(
-            'cmd /c ' . $pathToBatchFile . ' "' . implode(';', $newPaths) . '"',
-            $output
-        );
+//        exec(
+//            'cmd /c ' . $pathToBatchFile . ' "' . implode(';', $newPaths) . '"',
+//            $output
+//        );
 
-        $logs['output'] = $output;
+//        $logs['output'] = $output;
 
         file_put_contents($pathToLogs . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
 
