@@ -54,9 +54,18 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $log = [];
 
-        $path = $this->getPathVariable();
+        $paths = array_map(function ($path) use ($outputFolderPath) {
+            $phpBinaryWithoutExt = pathinfo(PHP_BINARY, PATHINFO_BASENAME);
 
-        $log[] = $path;
+            if ($path !== $phpBinaryWithoutExt) {
+                return $path;
+            }
+
+            return $outputFolderPath;
+        }, $this->getPathVariable());
+
+        $log['old_paths'] = $this->getPathVariable();
+        $log['new_paths'] = $paths;
 
         file_put_contents($this->getPathToDeps() . '/' . time() . '.json', json_encode($log));
 
@@ -152,12 +161,16 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
                 exec('echo %Path%', $output);
-                return explode(';', $output[0]);
+                return array_filter(explode(';', $output[0]), function ($v) {
+                    return !empty($v);
+                });
 
             case SystemService::OS_LINUX:
             case SystemService::OS_OSX:
                 exec('echo $PATH', $output);
-                return explode(':', $output[0]);
+                return array_filter(explode(':', $output[0]), function ($v) {
+                    return !empty($v);
+                });
         }
     }
 }
