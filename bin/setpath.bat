@@ -6,6 +6,9 @@ set OldInstallDir=%1
 set NewInstallDir=%2
 set OldPath=%Path%
 set NewPath=!OldPath:%OldInstallDir%=!
+
+echo %OldInstallDir%
+echo %NewInstallDir%
 echo "%NewPath%"
 ::setx /m "%KeyName%" "%NewPath%";
 pause
