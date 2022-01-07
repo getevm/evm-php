@@ -46,7 +46,7 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         $pathToLogs = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'logs';
         $fileName = $installationDirName . '.json';
 
-        file_put_contents($pathToLogs . DIRECTORY_SEPARATOR . $fileName, json_encode($logs));
+        file_put_contents($pathToLogs . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
 
         return Command::SUCCESS;
     }
