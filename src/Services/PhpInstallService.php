@@ -122,20 +122,11 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
                 $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $outputInterface) {
                     $fileName = pathinfo($release, PATHINFO_FILENAME);
 
-                    $outputInterface->writeln([
-                        $fileName
-                    ]);
-
                     if (strpos($fileName, '-nts-') === false) {
                         list($php, $version, $win, $vcvs, $archType) = explode('-', $fileName);
                     } else {
                         list($php, $version, $nts, $win, $vcvs, $archType) = explode('-', $fileName);
                     }
-
-                    $outputInterface->writeln([
-                        $version . ' - ' . $config['version'],
-                        $archType . ' - ' . $config['archType']
-                    ]);
 
                     $versionCheck = $version === $config['version'];
                     $archTypeCheck = $archType === $config['archType'];
