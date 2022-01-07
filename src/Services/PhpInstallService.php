@@ -52,7 +52,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $outputFolderPath = $this->getOutputPath($outputZipFile);
 
-        $pathToZip = $outputFolderPath . '/' . $outputZipFile;
+        $pathToZip = $outputFolderPath . DIRECTORY_SEPARATOR . $outputZipFile;
         file_put_contents($pathToZip, $response->getBody());
 
         $this->getOutputInterface()->writeln([
@@ -183,7 +183,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function getOutputPath($outputFileName)
     {
-        $outputPath = realpath(OSHelper::getPathToDeps() . '/php/' . pathinfo($outputFileName, PATHINFO_FILENAME));
+        $outputPath = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . pathinfo($outputFileName, PATHINFO_FILENAME);
 
         if (!is_dir($outputPath)) {
             mkdir($outputPath, null, true);
