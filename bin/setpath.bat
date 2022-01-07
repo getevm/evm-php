@@ -1,6 +1,6 @@
 @echo off
 
-set KeyName=Path
+set KeyName=DERP
 set KeyValue=%1
 
 if "%KeyValue%" == "" ( echo Path value not set. ) else (
