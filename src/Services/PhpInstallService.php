@@ -15,7 +15,8 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute()
     {
-        $this->createPathToDeps();
+        $this->createRootInstallationDirectory();
+
         $releaseUrl = $this->getReleaseUrl();
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
         $outputZipFile = $this->buildOutputFileName($ext);
@@ -51,23 +52,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $this->getOutputInterface()->writeln([
             'Unzipped to ' . $outputFolderPath
         ]);
-
-        $log = [];
-
-        $paths = array_map(function ($path) use ($outputFolderPath) {
-            $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR.pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
-
-            if ($path !== $phpBinaryWithoutExt) {
-                return $path;
-            }
-
-            return $outputFolderPath;
-        }, $this->getPathVariable());
-
-        $log['oldPaths'] = $this->getPathVariable();
-        $log['newPaths'] = $paths;
-
-        file_put_contents($this->getPathToDeps() . '/' . time() . '.json', json_encode($log));
 
         return Command::SUCCESS;
     }
@@ -120,7 +104,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
     private function getOutputPath($outputFileName)
     {
-        $outputPath = $this->getPathToDeps() . '/' . pathinfo($outputFileName, PATHINFO_FILENAME);
+        $outputPath = OSHelper::getPathToDeps() . '/php/' . pathinfo($outputFileName, PATHINFO_FILENAME);
 
         if (!is_dir($outputPath)) {
             mkdir($outputPath, null, true);
@@ -129,48 +113,12 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         return $outputPath;
     }
 
-    private function getPathToDeps()
+    private function createRootInstallationDirectory()
     {
-        $pathToPhpDeps = null;
+        $path = OSHelper::getPathToDeps() . '/php';
 
-        switch (SystemService::getOS()) {
-            case SystemService::OS_WIN:
-                $pathToPhpDeps = $_SERVER['HOMEDRIVE'] . $_SERVER['HOMEPATH'] . '/evm/php';
-                break;
-
-            case SystemService::OS_LINUX:
-            case SystemService::OS_OSX:
-                $pathToPhpDeps = $_SERVER['HOME'] . '/evm/php';
-                break;
-        }
-
-        return $pathToPhpDeps;
-    }
-
-    private function createPathToDeps()
-    {
-        $pathToPhpDeps = $this->getPathToDeps();
-
-        if ($pathToPhpDeps && !is_dir($pathToPhpDeps)) {
-            mkdir($pathToPhpDeps, null, true);
-        }
-    }
-
-    private function getPathVariable()
-    {
-        switch (SystemService::getOS()) {
-            case SystemService::OS_WIN:
-                exec('echo %Path%', $output);
-                return array_filter(explode(';', $output[0]), function ($v) {
-                    return !empty($v);
-                });
-
-            case SystemService::OS_LINUX:
-            case SystemService::OS_OSX:
-                exec('echo $PATH', $output);
-                return array_filter(explode(':', $output[0]), function ($v) {
-                    return !empty($v);
-                });
+        if (!is_dir($path)) {
+            mkdir($path, null, true);
         }
     }
 }

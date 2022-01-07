@@ -9,6 +9,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+//use Getevm\Evm\Services\PhpUseService;
+
 class PhpCommand extends Command
 {
     protected function configure()
@@ -35,6 +37,15 @@ class PhpCommand extends Command
                     'nts' => $input->getOption('nts'),
                     'archType' => $input->getOption('archType')
                 ]))->execute();
+
+//            case 'use':
+//                $version = $input->getOption('version');
+//
+//                return (new PhpUseService($output, [
+//                    'version' => $version,
+//                    'nts' => $input->getOption('nts'),
+//                    'archType' => $input->getOption('archType')
+//                ]))->execute();
 
             default:
                 return Command::SUCCESS;
