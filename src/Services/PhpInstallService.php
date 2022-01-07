@@ -84,10 +84,14 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $extOptions = array_merge(['none', 'all'], $exts);
         $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
         $extsQuestions->setMultiselect(true);
-        $extsQuestions->setAutocompleterValues($extOptions);
         $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
 
-        $this->getOutputInterface()->writeln($extsToEnable);
+        if (!in_array('none', $extsToEnable)) {
+            $iniFilePath = DEPS_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName() . DIRECTORY_SEPARATOR;
+
+            rename($iniFilePath . 'php.ini-production', $iniFilePath . 'php.ini');
+            copy($iniFilePath . 'php.ini', $iniFilePath . 'php.ini.bak');
+        }
 
         $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
 
@@ -228,4 +232,15 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             mkdir($dir, null, true);
         }
     }
+
+    private function buildInstallationDirectoryName()
+    {
+        $dir = $this->getConfig()['version'];
+        $dir .= $this->getConfig()['ts'] ? '-ts' : '-nts';
+        $dir .= '-' . $this->getConfig()['archType'];
+        $dir .= '-' . $this->getConfig()['osType'];
+
+        return $dir;
+    }
+
 }
