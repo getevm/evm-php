@@ -20,23 +20,28 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
         $outputFileName = $this->buildOutputFileName($ext);
 
+        $this->getOutputInterface()->writeln([
+            PHP_BINARY,
+            PHP_BINDIR
+        ]);
+
         if (!$releaseUrl) {
-            $this->getOutput()->writeln('Failed to get release from OS.');
+            $this->getOutputInterface()->writeln('Failed to get release from OS.');
             return Command::FAILURE;
         }
 
-        $this->getOutput()->writeln('Attempting to download from ' . $releaseUrl . ' (' . SystemService::toString() . ')');
+        $this->getOutputInterface()->writeln('Attempting to download from ' . $releaseUrl . ' (' . SystemService::toString() . ')');
 
         $response = $this->getGuzzle()->get($releaseUrl);
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
-            $this->getOutput()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
+            $this->getOutputInterface()->writeln('PHP v' . $this->getConfig()['version'] . ' cannot be found.');
             return Command::INVALID;
         }
 
         $outputPath = $this->getOutputPath($outputFileName);
         file_put_contents($outputPath . '/' . $outputFileName, $response->getBody());
-        $this->getOutput()->writeln('Downloaded to ' . $outputPath);
+        $this->getOutputInterface()->writeln('Downloaded to ' . $outputPath);
 
         $zip = new \ZipArchive();
 

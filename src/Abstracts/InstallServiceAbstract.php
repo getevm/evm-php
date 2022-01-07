@@ -10,7 +10,7 @@ class InstallServiceAbstract
     /**
      * @var OutputInterface
      */
-    private $output;
+    private $outputInterface;
 
     /**
      * @var array
@@ -29,7 +29,7 @@ class InstallServiceAbstract
      */
     public function __construct(OutputInterface $output, array $config)
     {
-        $this->output = $output;
+        $this->outputInterface = $output;
         $this->config = $config;
         $this->guzzle = new Client;
     }
@@ -37,9 +37,9 @@ class InstallServiceAbstract
     /**
      * @return OutputInterface
      */
-    public function getOutput()
+    public function getOutputInterface()
     {
-        return $this->output;
+        return $this->outputInterface;
     }
 
     /**
