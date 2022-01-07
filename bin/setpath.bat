@@ -9,5 +9,3 @@ echo "%OldPath%"
 echo "%NewPath%"
 
 setx /m "%KeyName%" "%NewPath%"
-pause
-
