@@ -6,6 +6,7 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
@@ -76,6 +77,17 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         ]);
 
         $helper = $this->getCommand()->getHelper('question');
+
+        $exts = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts'];
+        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', [], null);
+        $extsQuestions->setMultiselect(true);
+        $extsQuestions->setAutocompleterValues(array_values($exts));
+        $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
+
+        if (!is_null($extsToEnable)) {
+            $this->getOutputInterface()->writeln($extsToEnable);
+        }
+
         $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
 
         if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
