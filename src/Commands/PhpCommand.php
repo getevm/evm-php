@@ -25,7 +25,7 @@ class PhpCommand extends Command
             ->addArgument('version', InputArgument::OPTIONAL, 'The PHP version')
             ->addOption('ts', null, InputOption::VALUE_OPTIONAL, 'Non thread safe?', $threadSafety)
             ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Architecture type?', SystemService::getArchType())
-            ->addOption('os', null, InputOption::VALUE_REQUIRED, 'Get release for specific OS', SystemService::getOSType());
+            ->addOption('osType', null, InputOption::VALUE_REQUIRED, 'Get release for specific OS Type', SystemService::getOSType());
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
