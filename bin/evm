@@ -8,7 +8,11 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use Getevm\Evm\Commands\PhpCommand;
+use Getevm\Evm\Services\OSHelper;
 use Symfony\Component\Console\Application;
+
+define('DEPS_PATH', OSHelper::getPathToDeps());
+define('DEPS_PHP_PATH', OSHelper::getPathToDeps() . '/php');
 
 /**
  * - evm php install 7.4.0

@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Commands;
 
 use Getevm\Evm\Services\PhpInstallService;
+use Getevm\Evm\Services\PhpUseService;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -42,14 +43,16 @@ class PhpCommand extends Command
                     'osType' => $input->getOption('osType'),
                 ]))->execute();
 
-//            case 'use':
-//                $version = $input->getOption('version');
-//
-//                return (new PhpUseService($output, [
-//                    'version' => $version,
-//                    'nts' => $input->getOption('nts'),
-//                    'archType' => $input->getOption('archType')
-//                ]))->execute();
+            case 'use':
+                $version = $input->getOption('version');
+
+                return (new PhpUseService($output, [
+                    'version' => $version,
+                    'ts' => $input->getOption('ts'),
+                    'archType' => $input->getOption('archType'),
+                    'os' => SystemService::toString(),
+                    'osType' => $input->getOption('osType'),
+                ]))->execute();
 
             default:
                 return Command::SUCCESS;
