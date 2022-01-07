@@ -1,3 +1,5 @@
+@echo off
+
 SetLocal EnableDelayedExpansion
 
 set KeyName=Path
@@ -12,6 +14,8 @@ if "%OldInstallDir%" == "" (
     ) else (
         set OldPath=%Path%
         set NewPath=!OldPath:%OldInstallDir%=!
+
+        echo %NewPath%
 
         setx /m "%KeyName%" "%NewPath%";
 
