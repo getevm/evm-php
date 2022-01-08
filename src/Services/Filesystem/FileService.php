@@ -6,7 +6,10 @@ use Getevm\Evm\Services\SystemService;
 
 class FileService
 {
-    public function pathToEvmDir()
+    /**
+     * @return string|null
+     */
+    public static function pathToEvmDir(): ?string
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
@@ -36,7 +39,7 @@ class FileService
      */
     public static function getPathToInstallationDir(): ?string
     {
-        return self::getPathToInstallationDir();
+        return self::pathToEvmDir();
     }
 
     /**
