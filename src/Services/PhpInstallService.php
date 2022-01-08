@@ -79,7 +79,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         ]);
 
         $helper = $this->getCommand()->getHelper('question');
-
         $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
         $extOptions = array_merge(['none', 'all'], $exts);
         $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
