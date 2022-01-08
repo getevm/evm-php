@@ -4,6 +4,7 @@ namespace Getevm\Evm\Services;
 
 use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
+use Getevm\Evm\Services\Php\CACertService;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -72,7 +73,23 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
         $extsQuestions->setMultiselect(true);
         $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
-        
+
+        $certService = new CACertService();
+
+        $pathToInstallationDir = $outputFolderPath;
+
+        if ($cert = $certService->download()) {
+            $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
+
+            if ($certService->store($pathToCert, $cert)) {
+                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
+            } else {
+                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
+            }
+        } else {
+            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
+        }
+
         /**
          * - set extensions
          * - set extension_dir
