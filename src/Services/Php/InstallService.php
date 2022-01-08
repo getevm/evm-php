@@ -12,6 +12,8 @@ use ZipArchive;
 
 class InstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
+    const PATH_TO_PHP_METADATA = __DIR__ . '/../../../data/php.json';
+
     /**
      * @return int
      * @throws GuzzleException
@@ -134,25 +136,11 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 //        return (new UseService($this->getOutputInterface(), $this->getConfig()))->execute();
     }
 
-    private function getUnixReleaseUrl()
-    {
-        $majorVersion = explode('.', $this->getConfig()['version'])[0];
-        return 'https://museum.php.net/php' . $majorVersion . '/php-' . $this->getConfig()['version'] . '.tar.gz';
-    }
-
-    private function getWindowsReleaseUrl()
-    {
-        $url = 'https://windows.php.net/downloads/releases/archives/php-';
-        $url .= $this->getConfig()['version'];
-        $url .= !$this->getConfig()['ts'] ? '-nts' : '';
-        $url .= '-Win32-vs16-';
-        $url .= $this->getConfig()['archType'];
-        $url .= '.zip';
-
-        return $url;
-    }
-
-    private function buildOutputFileName($ext)
+    /**
+     * @param $ext
+     * @return string
+     */
+    private function buildOutputFileName($ext): string
     {
         $fileName = $this->getConfig()['version'];
 
@@ -177,9 +165,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         $self = $this;
         $config = $this->getConfig();
 
-        $this->getConsoleOutputService()->warning(__DIR__);
-
-        $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$config['osType']];
+        $releasesByOSType = $this->getFileService()->getAsJson(self::PATH_TO_PHP_METADATA)[$this->getConfig()['osType']];
 
         switch ($config['osType']) {
             case 'nt':
@@ -199,8 +185,18 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
                 return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
 
             case 'nix':
-                return ' ';
+                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
+                    $version = str_replace('php-', '', str_replace('.tar.gz', '', $release));
+                    return $version === $config['version'];
+                }));
 
+                if (empty($release) || count($release) > 1) {
+                    return null;
+                }
+
+                $majorVersion = explode('.', $this->getConfig()['version'])[0];
+
+                return 'https://museum.php.net/php' . $majorVersion . '/' . $release[0];
             default:
                 return null;
         }

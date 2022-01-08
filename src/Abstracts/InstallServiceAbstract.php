@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Abstracts;
 
 use Getevm\Evm\Services\Console\ConsoleOutputService;
+use Getevm\Evm\Services\Filesystem\FileService;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,6 +16,9 @@ class InstallServiceAbstract
      */
     private $command;
 
+    /**
+     * @var InputInterface
+     */
     private $inputInterface;
 
     /**
@@ -26,6 +30,11 @@ class InstallServiceAbstract
      * @var ConsoleOutputService
      */
     private $consoleOutputService;
+
+    /**
+     * @var FileService
+     */
+    private $fileService;
 
     /**
      * @var array
@@ -49,6 +58,7 @@ class InstallServiceAbstract
         $this->inputInterface = $input;
         $this->outputInterface = $output;
         $this->consoleOutputService = new ConsoleOutputService($output);
+        $this->fileService = new FileService();
         $this->config = $config;
         $this->guzzle = new Client;
     }
@@ -83,6 +93,14 @@ class InstallServiceAbstract
     public function getConsoleOutputService(): ConsoleOutputService
     {
         return $this->consoleOutputService;
+    }
+
+    /**
+     * @return FileService
+     */
+    public function getFileService(): FileService
+    {
+        return $this->fileService;
     }
 
     /**
