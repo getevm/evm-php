@@ -104,10 +104,9 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             }
 
             $extensionDirValue = 'extension_dir="' . $iniFilePath . 'ext' . '"';
-
-            str_replace(';extension_dir = "ext"', $extensionDirValue, $iniFile);
+            $iniFile = str_replace(';extension_dir = "ext"', $extensionDirValue, $iniFile);
             file_put_contents($iniFilePath . 'php.ini', $iniFile);
-            unlink($iniFilePath . 'php.bak');
+            unlink($iniFilePath . 'php.ini.bak');
         }
 
         $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
