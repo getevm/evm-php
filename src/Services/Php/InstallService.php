@@ -6,7 +6,6 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
-use ZipArchive;
 
 class InstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -51,7 +50,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             mkdir($pathToInstallationDir, null, true);
         }
 
-        $archiveName = pathinfo($releaseUrl, PATHINFO_FILENAME);
+        $archiveName = pathinfo($releaseUrl, PATHINFO_BASENAME);
         $pathToArchive = $pathToInstallationDir . DIRECTORY_SEPARATOR . $archiveName;
         file_put_contents($pathToArchive, $response);
         $this->getConsoleOutputService()->success('Downloaded to ' . $pathToArchive . '.');
