@@ -2,6 +2,7 @@
 
 namespace Getevm\Evm\Abstracts;
 
+use Getevm\Evm\Services\Console\ConsoleOutputService;
 use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,6 +21,11 @@ class InstallServiceAbstract
      * @var OutputInterface
      */
     private $outputInterface;
+
+    /**
+     * @var ConsoleOutputService
+     */
+    private $consoleOutputService;
 
     /**
      * @var array
@@ -42,6 +48,7 @@ class InstallServiceAbstract
         $this->command = $command;
         $this->inputInterface = $input;
         $this->outputInterface = $output;
+        $this->consoleOutputService = new ConsoleOutputService($output);
         $this->config = $config;
         $this->guzzle = new Client;
     }
@@ -49,7 +56,7 @@ class InstallServiceAbstract
     /**
      * @return Command
      */
-    public function getCommand()
+    public function getCommand(): Command
     {
         return $this->command;
     }
@@ -57,7 +64,7 @@ class InstallServiceAbstract
     /**
      * @return InputInterface
      */
-    public function getInputInterface()
+    public function getInputInterface(): InputInterface
     {
         return $this->inputInterface;
     }
@@ -65,15 +72,23 @@ class InstallServiceAbstract
     /**
      * @return OutputInterface
      */
-    public function getOutputInterface()
+    public function getOutputInterface(): OutputInterface
     {
         return $this->outputInterface;
     }
 
     /**
+     * @return ConsoleOutputService
+     */
+    public function getConsoleOutputService(): ConsoleOutputService
+    {
+        return $this->consoleOutputService;
+    }
+
+    /**
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }
@@ -81,7 +96,7 @@ class InstallServiceAbstract
     /**
      * @return Client
      */
-    public function getGuzzle()
+    public function getGuzzle(): Client
     {
         return $this->guzzle;
     }

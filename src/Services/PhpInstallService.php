@@ -4,7 +4,6 @@ namespace Getevm\Evm\Services;
 
 use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
-use Getevm\Evm\Services\Console\ConsoleOutputService;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -19,29 +18,20 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      */
     public function execute(): int
     {
-        $consoleOutput = new ConsoleOutputService($this->getOutputInterface());
+        $this->createPrerequisiteDirectories();
 
-        $consoleOutput->info('info');
-        $consoleOutput->success('success');
-        $consoleOutput->warning('warning');
-        $consoleOutput->error('error');
-
-        $this->getOutputInterface()->writeln([
+        $this->getConsoleOutputService()->std([
             'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
             'Thread Safety: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
         ]);
 
-        $this->createPrerequisiteDirectories();
-
-        $this->getOutputInterface()->writeln([
-            'Finding appropriate release.'
-        ]);
+        $this->getConsoleOutputService()->std('Finding appropriate release.');
 
         $releaseUrl = $this->getReleaseUrl();
 
         if (!$releaseUrl) {
-            $this->getOutputInterface()->writeln(['Failed to find release.']);
+            $this->getConsoleOutputService()->error('Failed to find release.');
             return Command::FAILURE;
         }
 
@@ -55,36 +45,26 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $response = $this->getGuzzle()->get($releaseUrl);
 
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
-            $this->getOutputInterface()->writeln([
-                'Failed to download release.'
-            ]);
-
+            $this->getConsoleOutputService()->error('Failed to download release.');
             return Command::INVALID;
         }
 
         $outputFolderPath = $this->getOutputPath($outputZipFile);
-
         $pathToZip = $outputFolderPath . DIRECTORY_SEPARATOR . $outputZipFile;
         file_put_contents($pathToZip, $response->getBody());
 
-        $this->getOutputInterface()->writeln([
-            'Downloaded to ' . $pathToZip . '.'
-        ]);
+        $this->getConsoleOutputService()->success('Downloaded to ' . $pathToZip . '.');
 
         $zip = new ZipArchive();
         $zip->open($pathToZip);
         $zip->extractTo($outputFolderPath);
         $zip->close();
 
-        $this->getOutputInterface()->writeln([
-            'Unzipped to ' . $outputFolderPath . '. Cleaning up downloaded files.'
-        ]);
+        $this->getConsoleOutputService()->success('Unzipped to ' . $outputFolderPath . '. Cleaning up downloaded files.');
 
         unlink($pathToZip);
 
-        $this->getOutputInterface()->writeln([
-            'Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.'
-        ]);
+        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
         $helper = $this->getCommand()->getHelper('question');
         $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
@@ -92,8 +72,7 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
         $extsQuestions->setMultiselect(true);
         $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
-
-
+        
         /**
          * - set extensions
          * - set extension_dir

@@ -16,6 +16,11 @@ class ConsoleOutputService
         $this->output = $output;
     }
 
+    public function std($messages)
+    {
+        $this->output->writeln($messages);
+    }
+
     public function info($messages)
     {
         $this->output->writeln(
@@ -47,6 +52,10 @@ class ConsoleOutputService
     private function parseMessages($messages, $type = 'info'): array
     {
         $messages = is_string($messages) ? [$messages] : $messages;
+
+        if (is_null($type)) {
+            return $messages;
+        }
 
         return array_map(function ($message) use ($type) {
             return '<' . $type . '>' . $message . '</' . $type . '>';
