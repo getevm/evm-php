@@ -1,17 +1,16 @@
 <?php
 
-namespace Getevm\Evm\Services;
+namespace Getevm\Evm\Services\Php;
 
 use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
-use Getevm\Evm\Services\Php\CACertService;
+use Getevm\Evm\Services\OSHelper;
+use Getevm\Evm\Services\SystemService;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Question\ChoiceQuestion;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use ZipArchive;
 
-class PhpInstallService extends InstallServiceAbstract implements InstallServiceInterface
+class InstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
     /**
      * @return int
@@ -67,15 +66,10 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
-        $helper = $this->getCommand()->getHelper('question');
-        $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
-        $extOptions = array_merge(['none', 'all'], $exts);
-        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
-        $extsQuestions->setMultiselect(true);
-        $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
-
+        /*********************************************************
+         * Attempt to download and store the CA Cert for php.ini
+         *********************************************************/
         $certService = new CACertService();
-
         $pathToInstallationDir = $outputFolderPath;
 
         if ($cert = $certService->download()) {
@@ -90,44 +84,54 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
             $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
         }
 
+//        $phpIniService = new PhpIniService();
+
+        /*********************************************************
+         * Setup the PHP extensions as requested by the user
+         *********************************************************/
+//        $helper = $this->getCommand()->getHelper('question');
+//        $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
+//        $extOptions = array_merge(['none', 'all'], $exts);
+//        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
+//        $extsQuestions->setMultiselect(true);
+//        $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
+
         /**
          * - set extensions
          * - set extension_dir
-         * - set curl.cainfo
-         * - set openssl.capath
-         * - cert: https://curl.haxx.se/ca/cacert.pem
          */
 
-        if (!in_array('none', $extsToEnable)) {
-            $iniFilePath = DEPS_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName() . DIRECTORY_SEPARATOR;
+//        if (!in_array('none', $extsToEnable)) {
+//            $iniFilePath = DEPS_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName() . DIRECTORY_SEPARATOR;
+//
+//            rename($iniFilePath . 'php.ini-production', $iniFilePath . 'php.ini');
+//            copy($iniFilePath . 'php.ini', $iniFilePath . 'php.ini.bak');
+//
+//            $iniFile = file_get_contents($iniFilePath . 'php.ini');
+//            $extsToEnable = $extsToEnable[0] === 'all' ? $exts : $extsToEnable;
+//
+//            foreach ($extsToEnable as $ext) {
+//                $extNeedle = ';extension=' . $ext;
+//
+//                if (strpos($iniFile, $extNeedle) !== false) {
+//                    $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
+//                }
+//            }
+//
+//            $extensionDirValue = 'extension_dir="' . $iniFilePath . 'ext' . '"';
+//            $iniFile = str_replace(';extension_dir = "ext"', $extensionDirValue, $iniFile);
+//            file_put_contents($iniFilePath . 'php.ini', $iniFile);
+//            unlink($iniFilePath . 'php.ini.bak');
+//        }
+//
+//        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
 
-            rename($iniFilePath . 'php.ini-production', $iniFilePath . 'php.ini');
-            copy($iniFilePath . 'php.ini', $iniFilePath . 'php.ini.bak');
+//        if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
+//            return Command::SUCCESS;
+//        }
 
-            $iniFile = file_get_contents($iniFilePath . 'php.ini');
-            $extsToEnable = $extsToEnable[0] === 'all' ? $exts : $extsToEnable;
-
-            foreach ($extsToEnable as $ext) {
-                $extNeedle = ';extension=' . $ext;
-
-                if (strpos($iniFile, $extNeedle) !== false) {
-                    $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
-                }
-            }
-
-            $extensionDirValue = 'extension_dir="' . $iniFilePath . 'ext' . '"';
-            $iniFile = str_replace(';extension_dir = "ext"', $extensionDirValue, $iniFile);
-            file_put_contents($iniFilePath . 'php.ini', $iniFile);
-            unlink($iniFilePath . 'php.ini.bak');
-        }
-
-        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
-
-        if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
-            return Command::SUCCESS;
-        }
-
-        return (new PhpUseService($this->getOutputInterface(), $this->getConfig()))->execute();
+        return Command::SUCCESS;
+//        return (new UseService($this->getOutputInterface(), $this->getConfig()))->execute();
     }
 
     private function getUnixReleaseUrl()
@@ -168,15 +172,13 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         return $fileName;
     }
 
-    public function getReleaseUrl()
-    {
-        return $this->findRelease();
-    }
-
-    private function findRelease()
+    public function getReleaseUrl(): ?string
     {
         $self = $this;
         $config = $this->getConfig();
+
+        $this->getConsoleOutputService()->warning(__DIR__);
+
         $releasesByOSType = json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)[$config['osType']];
 
         switch ($config['osType']) {
@@ -248,7 +250,6 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
     private function createPrerequisiteDirectories()
     {
         $dirs = [
-            OSHelper::getPathToDeps(),
             OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'logs'
         ];
 

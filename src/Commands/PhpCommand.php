@@ -2,9 +2,10 @@
 
 namespace Getevm\Evm\Commands;
 
-use Getevm\Evm\Services\PhpInstallService;
-use Getevm\Evm\Services\PhpUseService;
+use Getevm\Evm\Services\Php\InstallService;
+use Getevm\Evm\Services\Php\UseService;
 use Getevm\Evm\Services\SystemService;
+use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +14,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class PhpCommand extends Command
 {
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
@@ -25,14 +29,20 @@ class PhpCommand extends Command
             ->addOption('osType', null, InputOption::VALUE_REQUIRED, 'Get a release targeting an OS type (nt/nix)', SystemService::getOSType());
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     * @throws GuzzleException
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $cmd = $input->getArgument('cmd');
         $version = $input->getArgument('version');
 
         switch ($cmd) {
             case 'install':
-                return (new PhpInstallService($this, $input, $output, [
+                return (new InstallService($this, $input, $output, [
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
                     'archType' => $input->getOption('archType'),
@@ -41,7 +51,7 @@ class PhpCommand extends Command
                 ]))->execute();
 
             case 'use':
-                return (new PhpUseService($output, [
+                return (new UseService($output, [
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
                     'archType' => $input->getOption('archType'),

@@ -1,14 +1,19 @@
 <?php
 
-namespace Getevm\Evm\Services;
+namespace Getevm\Evm\Services\Php;
 
 use Getevm\Evm\Abstracts\UseServiceAbstract;
 use Getevm\Evm\Interfaces\UseServiceInterface;
+use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;
+use const DEPS_PATH;
 
-class PhpUseService extends UseServiceAbstract implements UseServiceInterface
+class UseService extends UseServiceAbstract implements UseServiceInterface
 {
-    public function execute()
+    /**
+     * @return int
+     */
+    public function execute(): int
     {
         $logs = [];
         $installationDirName = $this->buildInstallationDirectoryName();
@@ -54,7 +59,10 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         return Command::SUCCESS;
     }
 
-    private function buildInstallationDirectoryName()
+    /**
+     * @return string
+     */
+    private function buildInstallationDirectoryName(): string
     {
         $dir = $this->getConfig()['version'];
         $dir .= $this->getConfig()['ts'] ? '-ts' : '-nts';
@@ -64,6 +72,9 @@ class PhpUseService extends UseServiceAbstract implements UseServiceInterface
         return $dir;
     }
 
+    /**
+     * @return false|string[]|void
+     */
     private function getPathVariable()
     {
         switch (SystemService::getOS()) {
