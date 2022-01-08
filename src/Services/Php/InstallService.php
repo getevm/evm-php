@@ -4,8 +4,6 @@ namespace Getevm\Evm\Services\Php;
 
 use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
-use Getevm\Evm\Services\OSHelper;
-use Getevm\Evm\Services\SystemService;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use ZipArchive;
@@ -20,8 +18,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
      */
     public function execute(): int
     {
-        $this->createPrerequisiteDirectories();
-
         $this->getConsoleOutputService()->std([
             'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
@@ -37,9 +33,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             return Command::FAILURE;
         }
 
-        $ext = pathinfo($releaseUrl, PATHINFO_EXTENSION);
-        $outputZipFile = $this->buildOutputFileName($ext);
-
         $this->getOutputInterface()->writeln([
             'Release found attempting to download from ' . $releaseUrl . '.'
         ]);
@@ -51,40 +44,46 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             return Command::INVALID;
         }
 
-        $outputFolderPath = $this->getOutputPath($outputZipFile);
-        $pathToZip = $outputFolderPath . DIRECTORY_SEPARATOR . $outputZipFile;
-        file_put_contents($pathToZip, $response->getBody());
+        $response = $response->getBody();
+        $pathToInstallationDir = $this->getFileService()->getPathToInstallationDir() . DIRECTORY_SEPARATOR . $this->buildOutputName();
 
-        $this->getConsoleOutputService()->success('Downloaded to ' . $pathToZip . '.');
+        if (!is_dir($pathToInstallationDir)) {
+            mkdir($pathToInstallationDir, null, true);
+        }
 
-        $zip = new ZipArchive();
-        $zip->open($pathToZip);
-        $zip->extractTo($outputFolderPath);
-        $zip->close();
+        $archiveName = pathinfo($releaseUrl, PATHINFO_FILENAME);
+        $pathToArchive = $pathToInstallationDir . DIRECTORY_SEPARATOR . $archiveName;
+        file_put_contents($pathToArchive, $response);
+        $this->getConsoleOutputService()->success('Downloaded to ' . $pathToArchive . '.');
 
-        $this->getConsoleOutputService()->success('Unzipped to ' . $outputFolderPath . '. Cleaning up downloaded files.');
-
-        unlink($pathToZip);
-
-        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
+//        $zip = new ZipArchive();
+//        $zip->open($pathToZip);
+//        $zip->extractTo($outputFolderPath);
+//        $zip->close();
+//
+//        $this->getConsoleOutputService()->success('Unzipped to ' . $outputFolderPath . '. Cleaning up downloaded files.');
+//
+//        unlink($pathToZip);
+//
+//        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
         /*********************************************************
          * Attempt to download and store the CA Cert for php.ini
          *********************************************************/
-        $certService = new CACertService();
-        $pathToInstallationDir = $outputFolderPath;
-
-        if ($cert = $certService->download()) {
-            $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
-
-            if ($certService->store($pathToCert, $cert)) {
-                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
-            } else {
-                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
-            }
-        } else {
-            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
-        }
+//        $certService = new CACertService();
+//        $pathToInstallationDir = $outputFolderPath;
+//
+//        if ($cert = $certService->download()) {
+//            $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
+//
+//            if ($certService->store($pathToCert, $cert)) {
+//                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
+//            } else {
+//                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
+//            }
+//        } else {
+//            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
+//        }
 
 //        $phpIniService = new PhpIniService();
 
@@ -137,34 +136,22 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
     }
 
     /**
-     * @param $ext
      * @return string
      */
-    private function buildOutputFileName($ext): string
+    private function buildOutputName(): string
     {
-        $fileName = $this->getConfig()['version'];
+        $name = $this->getConfig()['version'];
+        $name .= $this->getConfig()['ts'] ? '-ts' : '-nts';
+        $name .= '-' . $this->getConfig()['archType'];
+        $name .= '-' . $this->getConfig()['osType'];
 
-        if ($this->getConfig()['ts']) {
-            $fileName .= '-ts';
-        } else {
-            $fileName .= '-nts';
-        }
-
-        if (SystemService::getOS() === SystemService::OS_WIN) {
-            $fileName .= '-' . $this->getConfig()['archType'];
-        }
-
-        $fileName .= '-' . $this->getConfig()['osType'];
-        $fileName .= '.' . $ext;
-
-        return $fileName;
+        return $name;
     }
 
     public function getReleaseUrl(): ?string
     {
         $self = $this;
         $config = $this->getConfig();
-
         $releasesByOSType = $this->getFileService()->getAsJson(self::PATH_TO_PHP_METADATA)[$this->getConfig()['osType']];
 
         switch ($config['osType']) {
@@ -230,32 +217,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             'archType' => isset($archType) ? $archType : null,
             'ext' => pathinfo($release, PATHINFO_EXTENSION),
         ];
-    }
-
-    private function getOutputPath($outputFileName)
-    {
-        $outputPath = OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . pathinfo($outputFileName, PATHINFO_FILENAME);
-
-        if (!is_dir($outputPath)) {
-            mkdir($outputPath, null, true);
-        }
-
-        return $outputPath;
-    }
-
-    private function createPrerequisiteDirectories()
-    {
-        $dirs = [
-            OSHelper::getPathToDeps() . DIRECTORY_SEPARATOR . 'logs'
-        ];
-
-        foreach ($dirs as $dir) {
-            if (is_dir($dir)) {
-                continue;
-            }
-
-            mkdir($dir, null, true);
-        }
     }
 
     private function buildInstallationDirectoryName()

@@ -61,6 +61,8 @@ class InstallServiceAbstract
         $this->fileService = new FileService();
         $this->config = $config;
         $this->guzzle = new Client;
+
+        $this->fileService->createPrerequisiteDirectories();
     }
 
     /**
