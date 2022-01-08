@@ -25,7 +25,15 @@
     "pdo_pgsql": "pdo_pgsql",
     "pdo_sqlite": "pdo_sqlite",
     "pgsql": "pgsql",
-    "shmop": "shmop"
+    "shmop": "shmop",
+    "snmp": "snmp",
+    "soap": "soap",
+    "sockets": "sockets",
+    "sodium": "sodium",
+    "sqlite3": "sqlite3",
+    "tidy": "tidy",
+    "xsl": "xsl",
+    "opcache": "opcache"
   },
   "nt": [
     "php-5.2.10-nts-Win32-VC6-x86.zip",
