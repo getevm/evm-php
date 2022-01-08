@@ -4,6 +4,7 @@ namespace Getevm\Evm\Services;
 
 use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
+use Getevm\Evm\Services\Console\ConsoleOutputService;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
@@ -16,8 +17,15 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
      * @return int
      * @throws GuzzleException
      */
-    public function execute()
+    public function execute(): int
     {
+        $consoleOutput = new ConsoleOutputService($this->getOutputInterface());
+
+        $consoleOutput->info('info');
+        $consoleOutput->success('success');
+        $consoleOutput->warning('warning');
+        $consoleOutput->error('error');
+
         $this->getOutputInterface()->writeln([
             'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
@@ -84,6 +92,15 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
         $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
         $extsQuestions->setMultiselect(true);
         $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
+
+
+        /**
+         * - set extensions
+         * - set extension_dir
+         * - set curl.cainfo
+         * - set openssl.capath
+         * - cert: https://curl.haxx.se/ca/cacert.pem
+         */
 
         if (!in_array('none', $extsToEnable)) {
             $iniFilePath = DEPS_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName() . DIRECTORY_SEPARATOR;
@@ -257,5 +274,4 @@ class PhpInstallService extends InstallServiceAbstract implements InstallService
 
         return $dir;
     }
-
 }
