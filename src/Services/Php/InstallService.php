@@ -115,7 +115,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         $pathToExtsDir = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
         $helper = $this->getCommand()->getHelper('question');
 
-        $this->getFileService()->getExtsListFromDir($pathToInstallationDir);
+        $this->getFileService()->getExtsListFromDir($pathToExtsDir);
 
 
 //        $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
