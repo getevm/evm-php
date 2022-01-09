@@ -65,23 +65,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $this->getConsoleOutputService()->success('Unzipped release to ' . $pathToInstallationDir . '.');
 
-        /*********************************************************
-         * Attempt to download and store the CA Cert for php.ini
-         *********************************************************/
-        $certService = new CACertService();
-
-        if ($cert = $certService->download()) {
-            $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
-
-            if ($certService->store($pathToCert, $cert)) {
-                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
-            } else {
-                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
-            }
-        } else {
-            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
-        }
-
         $phpIniService = new PhpIniService($pathToInstallationDir, $this->getFileService());
 
         if (!$phpIniService->enablePhpIni()) {
@@ -90,6 +73,34 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         }
 
         $this->getConsoleOutputService()->success('php.ini enabled.');
+
+        /*********************************************************
+         * Attempt to download and store the CA Cert for php.ini
+         *********************************************************/
+        $certService = new CACertService();
+        $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
+
+        if ($cert = $certService->download()) {
+            if ($certService->store($pathToCert, $cert)) {
+                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
+
+                if ($phpIniService->setCurlCAInfo($pathToCert)) {
+                    $this->getConsoleOutputService()->success('Successfully set curl.cainfo set.');
+                } else {
+                    $this->getConsoleOutputService()->warning('Failed to set curl.cainfo set.');
+                }
+
+                if ($phpIniService->setOpenSslCAPath($pathToCert)) {
+                    $this->getConsoleOutputService()->success('Successfully set openssl.cafile set.');
+                } else {
+                    $this->getConsoleOutputService()->warning('Failed to set openssl.cafile set.');
+                }
+            } else {
+                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
+            }
+        } else {
+            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
+        }
 
         /*********************************************************
          * Setup the PHP extensions as requested by the user

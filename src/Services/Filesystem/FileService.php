@@ -112,13 +112,13 @@ class FileService
      * @param string $search
      * @param string $replace
      * @param string $file
-     * @return void
+     * @return bool
      */
-    public function replaceInFile(string $search, string $replace, string $file)
+    public function replaceInFile(string $search, string $replace, string $file): bool
     {
-        file_put_contents(
-            $file,
-            str_replace($search, $replace, file_get_contents($file))
-        );
+        return file_put_contents(
+                $file,
+                str_replace($search, $replace, file_get_contents($file))
+            ) !== false;
     }
 }

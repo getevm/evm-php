@@ -45,13 +45,30 @@ class PhpIniService
         return rename($this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'php.ini-production', $this->pathToIniFile);
     }
 
-    public function setCurlCAInfo(string $pathToCert)
+    /**
+     * @return bool
+     */
+    public function setExtensionsDir(): bool
     {
-        $this->fileService->replaceInFile(';curl.cainfo =', $pathToCert, $this->pathToIniFile);
+
+        return $this->fileService->replaceInFile(';extension_dir = "ext"', $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext', $this->pathToIniFile);
     }
 
-    public function setOpenSslCAPath(string $pathToCert)
+    /**
+     * @param string $pathToCert
+     * @return bool
+     */
+    public function setCurlCAInfo(string $pathToCert): bool
     {
-        $this->fileService->replaceInFile(';openssl.capath=', $pathToCert, $this->pathToIniFile);
+        return $this->fileService->replaceInFile(';curl.cainfo =', $pathToCert, $this->pathToIniFile);
+    }
+
+    /**
+     * @param string $pathToCert
+     * @return bool
+     */
+    public function setOpenSslCAPath(string $pathToCert): bool
+    {
+        return $this->fileService->replaceInFile(';openssl.capath=', $pathToCert, $this->pathToIniFile);
     }
 }
