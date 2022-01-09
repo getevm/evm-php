@@ -79,6 +79,7 @@ class FileService
      */
     public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true)
     {
+        $baseDir = pathinfo($pathToArchive, PATHINFO_DIRNAME);
         $ext = pathinfo($pathToArchive, PATHINFO_EXTENSION);
 
         if (SystemService::getOSType() === 'nt') {
@@ -98,7 +99,7 @@ class FileService
 
                 return $extracted;
             } else {
-                $process = new Process(['tar -xf'], str_replace(pathinfo($pathToArchive, PATHINFO_FILENAME), '', $pathToArchive));
+                $process = new Process(['tar -xf'], $baseDir);
                 $process->run();
 
                 if (!$process->isSuccessful()) {
