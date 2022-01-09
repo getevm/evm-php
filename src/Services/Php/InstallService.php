@@ -63,20 +63,19 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         /*********************************************************
          * Attempt to download and store the CA Cert for php.ini
          *********************************************************/
-//        $certService = new CACertService();
-//        $pathToInstallationDir = $outputFolderPath;
-//
-//        if ($cert = $certService->download()) {
-//            $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
-//
-//            if ($certService->store($pathToCert, $cert)) {
-//                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
-//            } else {
-//                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
-//            }
-//        } else {
-//            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
-//        }
+        $certService = new CACertService();
+
+        if ($cert = $certService->download()) {
+            $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
+
+            if ($certService->store($pathToCert, $cert)) {
+                $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
+            } else {
+                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
+            }
+        } else {
+            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
+        }
 
 //        $phpIniService = new PhpIniService();
 
