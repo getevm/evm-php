@@ -140,7 +140,7 @@ class FileService
                 return str_replace('php_', '', pathinfo($ext, PATHINFO_FILENAME));
             }, $exts);
             $exts = array_values(array_filter($exts, function ($ext) {
-                return !in_array($ext, ['oci8_12c', 'oci8_19', 'pdo_firebird', 'pdo_oci']);
+                return !in_array($ext, ['oci8_12c', 'oci8_19', 'pdo_firebird', 'pdo_oci', 'zend_test']);
             }));
 
             if (empty($exts)) {
