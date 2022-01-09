@@ -46,7 +46,7 @@ class PhpIniService
                     $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
                 }
             }
-            
+
             return true;
         } else {
             //

@@ -6,6 +6,7 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class InstallService extends InstallServiceAbstract implements InstallServiceInterface
@@ -122,12 +123,14 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             $exts = $this->getFileService()->getExtsListFromDir($pathToExtsDir);
 
             if ($exts) {
-                $exts = array_merge(['none', 'all'], $exts);
+                $allExts = array_merge(['none', 'all'], $exts);
                 $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $exts, '0');
                 $extsQuestion->setMultiselect(true);
                 $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestion);
 
                 if (!in_array('none', $extsToEnable)) {
+                    $extsToEnable = in_array('all', $extsToEnable) ? $exts : $extsToEnable;
+
                     if ($phpIniService->enableExtensions($extsToEnable)) {
                         $this->getConsoleOutputService()->success('Successfully enabled extensions.');
                     }
