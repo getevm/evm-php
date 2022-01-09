@@ -4,6 +4,7 @@ namespace Getevm\Evm\Services\Php;
 
 use Getevm\Evm\Abstracts\UseServiceAbstract;
 use Getevm\Evm\Interfaces\UseServiceInterface;
+use Getevm\Evm\Services\Filesystem\FileService;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;
 use const DEPS_PATH;
@@ -18,7 +19,7 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         $logs = [];
         $installationDirName = $this->buildInstallationDirectoryName();
         $oldInstallationDirPath = null;
-        $newInstallationDirPath = DEPS_PATH . DIRECTORY_SEPARATOR . $installationDirName;
+        $newInstallationDirPath = FileService::getPathToInstallationDir() . DIRECTORY_SEPARATOR . $installationDirName;
 
         if (!is_dir($newInstallationDirPath)) {
             $this->getOutputInterface()->writeln([
@@ -54,7 +55,7 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
         $logs['output'] = $output;
         $this->getOutputInterface()->writeln($output);
-        file_put_contents(LOGS_PATH . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
+        file_put_contents(FileService::getPathToLogsDir() . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
 
         return Command::SUCCESS;
     }
