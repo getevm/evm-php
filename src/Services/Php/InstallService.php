@@ -6,6 +6,7 @@ use Getevm\Evm\Abstracts\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 class InstallService extends InstallServiceAbstract implements InstallServiceInterface
 {
@@ -111,7 +112,11 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         /*********************************************************
          * Setup the PHP extensions as requested by the user
          *********************************************************/
+        $pathToExtsDir = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
         $helper = $this->getCommand()->getHelper('question');
+
+        $this->getFileService()->getExtsListFromDir($pathToInstallationDir);
+
 
 //        $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
 //        $extOptions = array_merge(['none', 'all'], $exts);
@@ -147,15 +152,15 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 //            unlink($iniFilePath . 'php.ini.bak');
 //        }
 //
-//        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
-//        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
+        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
-//        if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
-//            return Command::SUCCESS;
-//        }
+        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
 
-        return Command::SUCCESS;
-//        return (new UseService($this->getOutputInterface(), $this->getConfig()))->execute();
+        if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
+            return Command::SUCCESS;
+        }
+
+        return (new UseService($this->getOutputInterface(), $this->getConfig()))->execute();
     }
 
     /**

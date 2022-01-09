@@ -25,8 +25,7 @@ class PhpCommand extends Command
             ->addArgument('cmd', InputArgument::REQUIRED, 'The command to execute upon the PHP env.')
             ->addArgument('version', InputArgument::OPTIONAL, 'Specify the release version')
             ->addOption('ts', null, InputOption::VALUE_NONE, 'Get a thread safe release (default nts)')
-            ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Get a release targeting an architecture type (x64/x86)', SystemService::getArchType())
-            ->addOption('osType', null, InputOption::VALUE_REQUIRED, 'Get a release targeting an OS type (nt/nix)', SystemService::getOSType());
+            ->addOption('archType', null, InputOption::VALUE_REQUIRED, 'Get a release targeting an architecture type (x64/x86)', SystemService::getArchType());
     }
 
     /**
@@ -46,8 +45,8 @@ class PhpCommand extends Command
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
                     'archType' => $input->getOption('archType'),
-                    'os' => SystemService::toString(),
-                    'osType' => $input->getOption('osType'),
+                    'os' => SystemService::getOSAsString(),
+                    'osType' => SystemService::getOSType(),
                 ]))->execute();
 
             case 'use':
@@ -55,8 +54,8 @@ class PhpCommand extends Command
                     'version' => $version,
                     'ts' => $input->getOption('ts'),
                     'archType' => $input->getOption('archType'),
-                    'os' => SystemService::toString(),
-                    'osType' => $input->getOption('osType'),
+                    'os' => SystemService::getOSAsString(),
+                    'osType' => SystemService::getOSType(),
                 ]))->execute();
 
             default:

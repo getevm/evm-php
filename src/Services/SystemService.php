@@ -29,7 +29,7 @@ class SystemService
     /**
      * @return string
      */
-    public static function toString(): string
+    public static function getOSAsString(): string
     {
         return [
             self::OS_UNKNOWN => 'Unknown',

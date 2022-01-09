@@ -2,6 +2,7 @@
 
 namespace Getevm\Evm\Services\Filesystem;
 
+use Exception;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -83,35 +84,20 @@ class FileService
         $pathInfo = pathinfo($pathToArchive);
 
         if (SystemService::getOSType() === 'nt') {
-            if ($pathInfo['extension'] === 'zip') {
-                $zip = new ZipArchive();
+            $zip = new ZipArchive();
 
-                if ($zip->open($pathToArchive) !== true) {
-                    return false;
-                }
-
-                $extracted = $zip->extractTo($extractToPath);
-                $zip->close();
-
-                if ($deleteAfterExtraction) {
-                    return unlink($pathToArchive);
-                }
-
-                return $extracted;
-            } else {
-                $process = new Process(['tar', '-xf', $pathInfo['basename'], '--strip', '1'], $pathInfo['dirname']);
-                $process->run();
-
-                if (!$process->isSuccessful()) {
-                    throw new ProcessFailedException($process);
-                }
-
-                if ($deleteAfterExtraction) {
-                    return unlink($pathToArchive);
-                }
-
-                return true;
+            if ($zip->open($pathToArchive) !== true) {
+                return false;
             }
+
+            $extracted = $zip->extractTo($extractToPath);
+            $zip->close();
+
+            if ($deleteAfterExtraction) {
+                return unlink($pathToArchive);
+            }
+
+            return $extracted;
         } else {
             $process = new Process(['tar', '-xf', $pathInfo['basename'], '--strip', '1'], $pathInfo['dirname']);
             $process->run();
@@ -135,6 +121,18 @@ class FileService
     public function getAsJson(string $path)
     {
         return json_decode(file_get_contents($path), true);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getExtsListFromDir(string $pathToExtDir)
+    {
+        if (SystemService::getOSType() === 'nt') {
+            throw new Exception(json_encode(glob($pathToExtDir . DIRECTORY_SEPARATOR . '*.dll')));
+        } else {
+
+        }
     }
 
     /**
