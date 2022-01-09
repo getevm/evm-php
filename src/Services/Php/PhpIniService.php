@@ -50,8 +50,9 @@ class PhpIniService
      */
     public function setExtensionsDir(): bool
     {
-
-        return $this->fileService->replaceInFile(';extension_dir = "ext"', $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext', $this->pathToIniFile);
+        $search = ';extension_dir = "ext"';
+        $replace = $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
+        return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
     }
 
     /**
@@ -60,7 +61,9 @@ class PhpIniService
      */
     public function setCurlCAInfo(string $pathToCert): bool
     {
-        return $this->fileService->replaceInFile(';curl.cainfo =', $pathToCert, $this->pathToIniFile);
+        $search = ';curl.cainfo =';
+        $replace = 'curl.cainfo="' . $pathToCert . '"';
+        return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
     }
 
     /**
@@ -69,6 +72,8 @@ class PhpIniService
      */
     public function setOpenSslCAPath(string $pathToCert): bool
     {
-        return $this->fileService->replaceInFile(';openssl.capath=', $pathToCert, $this->pathToIniFile);
+        $search = ';openssl.capath=';
+        $replace = 'openssl.capath="' . $pathToCert . '"';
+        return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
     }
 }
