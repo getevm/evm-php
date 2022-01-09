@@ -55,6 +55,9 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         file_put_contents($pathToArchive, $response);
         $this->getConsoleOutputService()->success('Downloaded to ' . $pathToArchive . '.');
 
+        /*****************************
+         * Unzip release and cleanup
+         *****************************/
         if (!$this->getFileService()->unzip($pathToArchive, $pathToInstallationDir)) {
             $this->getConsoleOutputService()->error('Failed to unzip release.');
             return Command::FAILURE;
@@ -79,7 +82,14 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
         }
 
-//        $phpIniService = new PhpIniService();
+        $phpIniService = new PhpIniService($pathToInstallationDir, $this->getFileService());
+
+        if (!$phpIniService->enablePhpIni()) {
+            $this->getConsoleOutputService()->error('Failed to enable php.ini file.');
+            return Command::FAILURE;
+        }
+
+        $this->getConsoleOutputService()->success('php.ini enabled.');
 
         /*********************************************************
          * Setup the PHP extensions as requested by the user

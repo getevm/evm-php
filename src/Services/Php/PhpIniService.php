@@ -9,6 +9,11 @@ class PhpIniService
     /**
      * @var string
      */
+    private $pathToInstallationDir;
+
+    /**
+     * @var string
+     */
     private $pathToIniFile;
 
     /**
@@ -16,10 +21,11 @@ class PhpIniService
      */
     private $fileService;
 
-    public function __construct(string $pathToIniFile)
+    public function __construct(string $pathToInstallationDir, FileService $fileService = null)
     {
-        $this->pathToIniFile = $pathToIniFile;
-        $this->fileService = new FileService();
+        $this->pathToInstallationDir = $pathToInstallationDir;
+        $this->pathToIniFile = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'php.ini';
+        $this->fileService = $fileService ?? new FileService();
     }
 
     public function enableExtensions(array $extensions)
@@ -27,10 +33,21 @@ class PhpIniService
 
     }
 
+    /**
+     * @return bool
+     */
+    public function enablePhpIni(): bool
+    {
+        if (file_exists($this->pathToIniFile)) {
+            return true;
+        }
+
+        return rename($this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'php.ini-production', $this->pathToIniFile);
+    }
+
     public function setCurlCAInfo(string $pathToCert)
     {
         $this->fileService->replaceInFile(';curl.cainfo =', $pathToCert, $this->pathToIniFile);
-
     }
 
     public function setOpenSslCAPath(string $pathToCert)
