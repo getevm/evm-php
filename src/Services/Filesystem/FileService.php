@@ -130,7 +130,17 @@ class FileService
     {
         if (SystemService::getOSType() === 'nt') {
             $pattern = $pathToExtDir . DIRECTORY_SEPARATOR . '*.dll';
-            throw new Exception(json_encode(glob($pattern)));
+            $exts = glob($pattern);
+
+            if (empty($exts)) {
+                return false;
+            }
+
+            $exts = array_map(function ($ext) {
+                return pathinfo($ext, PATHINFO_FILENAME);
+            }, $exts);
+
+            throw new Exception(json_encode($exts));
         } else {
 
         }
