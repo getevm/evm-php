@@ -124,7 +124,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
             if ($exts) {
                 $allExts = array_merge(['none', 'all'], $exts);
-                $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $exts, '0');
+                $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $allExts, '0');
                 $extsQuestion->setMultiselect(true);
                 $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestion);
 
@@ -138,7 +138,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
                     $this->getConsoleOutputService()->warning('No extensions selected. Skipping.');
                 }
             } else {
-
+                $this->getConsoleOutputService()->warning('Unable to find extensions. Skipping extension setup.');
             }
         } else {
             $this->getConsoleOutputService()->warning('Unable to set extension_dir. Skipping extension setup.');
