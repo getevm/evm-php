@@ -60,6 +60,8 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             return Command::FAILURE;
         }
 
+        $this->getConsoleOutputService()->success('Unzipped release to ' . $pathToInstallationDir . '.');
+
         /*********************************************************
          * Attempt to download and store the CA Cert for php.ini
          *********************************************************/
