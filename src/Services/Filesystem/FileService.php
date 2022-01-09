@@ -80,11 +80,10 @@ class FileService
      */
     public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true)
     {
-        $baseDir = pathinfo($pathToArchive, PATHINFO_DIRNAME);
-        $ext = pathinfo($pathToArchive, PATHINFO_EXTENSION);
+        $pathInfo = pathinfo($pathToArchive);
 
         if (SystemService::getOSType() === 'nt') {
-            if ($ext === 'zip') {
+            if ($pathInfo['extension'] === 'zip') {
                 $zip = new ZipArchive();
 
                 if ($zip->open($pathToArchive) !== true) {
@@ -100,7 +99,7 @@ class FileService
 
                 return $extracted;
             } else {
-                $process = new Process(['tar', '-xf'], $baseDir);
+                $process = new Process(['tar', '-xf', $pathInfo['basename']], $pathInfo['dirname']);
                 $process->run();
 
                 if (!$process->isSuccessful()) {
