@@ -113,8 +113,18 @@ class FileService
                 return true;
             }
         } else {
-//            tar -xf
-            return ';';
+            $process = new Process(['tar', '-xf', $pathInfo['basename'], '--strip', '1'], $pathInfo['dirname']);
+            $process->run();
+
+            if (!$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
+
+            if ($deleteAfterExtraction) {
+                return unlink($pathToArchive);
+            }
+
+            return true;
         }
     }
 
