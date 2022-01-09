@@ -23,23 +23,21 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             'Thread Safety: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
         ]);
 
-        $this->getConsoleOutputService()->std('Finding appropriate release.');
+        $this->getConsoleOutputService()->std('Finding appropriate release...');
 
         $releaseUrl = $this->getReleaseUrl();
 
         if (!$releaseUrl) {
-            $this->getConsoleOutputService()->error('Failed to find release.');
+            $this->getConsoleOutputService()->error('Failed to find release. Exiting.');
             return Command::FAILURE;
         }
 
-        $this->getOutputInterface()->writeln([
-            'Release found attempting to download from ' . $releaseUrl . '.'
-        ]);
-
-        $response = $this->getGuzzle()->get($releaseUrl);
-
-        if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
-            $this->getConsoleOutputService()->error('Failed to download release.');
+        $this->getConsoleOutputService()->std('Release found attempting to download from ' . $releaseUrl . '...');
+        
+        try {
+            $response = $this->getGuzzle()->get($releaseUrl);
+        } catch (GuzzleException $e) {
+            $this->getConsoleOutputService()->error('Failed to download release. Exiting.');
             return Command::INVALID;
         }
 

@@ -98,7 +98,7 @@ class FileService
 
                 return $extracted;
             } else {
-                $process = new Process(['tar -xf', '/C', '"' . $extractToPath . '"']);
+                $process = new Process(['tar -xf'], str_replace(pathinfo($pathToArchive, PATHINFO_FILENAME), '', $pathToArchive));
                 $process->run();
 
                 if (!$process->isSuccessful()) {
