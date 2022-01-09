@@ -78,10 +78,12 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
          * Attempt to download and store the CA Cert for php.ini
          *********************************************************/
         $certService = new CACertService();
-        $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl' . DIRECTORY_SEPARATOR . 'cacert.pem';
+        $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
 
         if ($cert = $certService->download()) {
             if ($certService->store($pathToCert, $cert)) {
+                $pathToCert .= DIRECTORY_SEPARATOR . 'cacert.pem';
+
                 $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
 
                 if ($phpIniService->setCurlCAInfo($pathToCert)) {
