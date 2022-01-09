@@ -55,16 +55,10 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         file_put_contents($pathToArchive, $response);
         $this->getConsoleOutputService()->success('Downloaded to ' . $pathToArchive . '.');
 
-//        $zip = new ZipArchive();
-//        $zip->open($pathToZip);
-//        $zip->extractTo($outputFolderPath);
-//        $zip->close();
-//
-//        $this->getConsoleOutputService()->success('Unzipped to ' . $outputFolderPath . '. Cleaning up downloaded files.');
-//
-//        unlink($pathToZip);
-//
-//        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
+        if (!$this->getFileService()->unzip($pathToArchive, $pathToInstallationDir)) {
+            $this->getConsoleOutputService()->error('Failed to unzip release.');
+            return Command::FAILURE;
+        }
 
         /*********************************************************
          * Attempt to download and store the CA Cert for php.ini
@@ -124,6 +118,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 //            unlink($iniFilePath . 'php.ini.bak');
 //        }
 //
+//        $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 //        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
 
 //        if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
@@ -216,15 +211,5 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             'archType' => isset($archType) ? $archType : null,
             'ext' => pathinfo($release, PATHINFO_EXTENSION),
         ];
-    }
-
-    private function buildInstallationDirectoryName()
-    {
-        $dir = $this->getConfig()['version'];
-        $dir .= $this->getConfig()['ts'] ? '-ts' : '-nts';
-        $dir .= '-' . $this->getConfig()['archType'];
-        $dir .= '-' . $this->getConfig()['osType'];
-
-        return $dir;
     }
 }

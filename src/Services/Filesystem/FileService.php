@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Services\Filesystem;
 
 use Getevm\Evm\Services\SystemService;
+use ZipArchive;
 
 class FileService
 {
@@ -66,6 +67,28 @@ class FileService
             }
 
             mkdir($dir, null, true);
+        }
+    }
+
+    public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true)
+    {
+        if (SystemService::getArchType() === 'nt') {
+            $zip = new ZipArchive();
+
+            if ($zip->open($pathToArchive) !== true) {
+                return false;
+            }
+
+            $extracted = $zip->extractTo($extractToPath);
+
+            if ($deleteAfterExtraction) {
+                return unlink($pathToArchive);
+            }
+
+            return $extracted;
+        } else {
+//            tar -xf
+            return ';';
         }
     }
 
