@@ -129,7 +129,8 @@ class FileService
     public function getExtsListFromDir(string $pathToExtDir)
     {
         if (SystemService::getOSType() === 'nt') {
-            throw new Exception(json_encode(glob($pathToExtDir . DIRECTORY_SEPARATOR . '*.dll')));
+            $pattern = $pathToExtDir . DIRECTORY_SEPARATOR . '*.dll';
+            throw new Exception(json_encode(glob($pattern)));
         } else {
 
         }
