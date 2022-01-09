@@ -7,7 +7,6 @@ use Getevm\Evm\Interfaces\UseServiceInterface;
 use Getevm\Evm\Services\Filesystem\FileService;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;
-use const DEPS_PATH;
 
 class UseService extends UseServiceAbstract implements UseServiceInterface
 {
