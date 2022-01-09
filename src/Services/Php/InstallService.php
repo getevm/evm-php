@@ -86,17 +86,17 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
                 $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
 
-                if ($phpIniService->setCurlCAInfo($pathToCert)) {
-                    $this->getConsoleOutputService()->success('Successfully set curl.cainfo set.');
-                } else {
-                    $this->getConsoleOutputService()->warning('Failed to set curl.cainfo set.');
-                }
-
-                if ($phpIniService->setOpenSslCAPath($pathToCert)) {
-                    $this->getConsoleOutputService()->success('Successfully set openssl.cafile set.');
-                } else {
-                    $this->getConsoleOutputService()->warning('Failed to set openssl.cafile set.');
-                }
+//                if ($phpIniService->setCurlCAInfo($pathToCert)) {
+//                    $this->getConsoleOutputService()->success('Successfully set curl.cainfo in php.ini.');
+//                } else {
+//                    $this->getConsoleOutputService()->warning('Failed to set curl.cainfo in php.ini.');
+//                }
+//
+//                if ($phpIniService->setOpenSslCAPath($pathToCert)) {
+//                    $this->getConsoleOutputService()->success('Successfully set openssl.cafile in php.ini.');
+//                } else {
+//                    $this->getConsoleOutputService()->warning('Failed to set openssl.cafile in php.ini.');
+//                }
             } else {
                 $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
             }
