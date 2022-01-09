@@ -102,7 +102,7 @@ class FileService
                 $process = new Process(['tar -xf'], $baseDir);
                 $process->run();
 
-                exit($process->getOutput());
+                return $process->getOutput();
 
                 if (!$process->isSuccessful()) {
                     return false;
