@@ -4,7 +4,6 @@ namespace Getevm\Evm\Services;
 
 class SystemService
 {
-
     const OS_UNKNOWN = 1;
     const OS_WIN = 2;
     const OS_LINUX = 3;
@@ -13,7 +12,7 @@ class SystemService
     /**
      * @return int
      */
-    public static function getOS()
+    public static function getOS(): int
     {
         switch (true) {
             case stristr(PHP_OS, 'DAR'):
@@ -27,7 +26,10 @@ class SystemService
         }
     }
 
-    public static function toString()
+    /**
+     * @return string
+     */
+    public static function toString(): string
     {
         return [
             self::OS_UNKNOWN => 'Unknown',
@@ -37,12 +39,18 @@ class SystemService
         ][self::getOS()];
     }
 
-    public static function getArchType()
+    /**
+     * @return string
+     */
+    public static function getArchType(): string
     {
         return PHP_INT_SIZE === 8 ? 'x64' : 'x86';
     }
 
-    public static function getOSType()
+    /**
+     * @return string|null
+     */
+    public static function getOSType(): ?string
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:

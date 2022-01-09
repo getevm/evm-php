@@ -70,9 +70,15 @@ class FileService
         }
     }
 
+    /**
+     * @param string $pathToArchive
+     * @param string $extractToPath
+     * @param bool $deleteAfterExtraction
+     * @return bool
+     */
     public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true)
     {
-        if (SystemService::getArchType() === 'nt') {
+        if (SystemService::getOSType() === 'nt') {
             $zip = new ZipArchive();
 
             if ($zip->open($pathToArchive) !== true) {
