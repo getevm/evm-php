@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Services\Filesystem;
 
 use Getevm\Evm\Services\SystemService;
+use Symfony\Component\Process\Process;
 use ZipArchive;
 
 class FileService
@@ -78,21 +79,38 @@ class FileService
      */
     public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true)
     {
+        $ext = pathinfo($pathToArchive, PATHINFO_EXTENSION);
+
         if (SystemService::getOSType() === 'nt') {
-            $zip = new ZipArchive();
+            if ($ext === 'zip') {
+                $zip = new ZipArchive();
 
-            if ($zip->open($pathToArchive) !== true) {
-                return false;
+                if ($zip->open($pathToArchive) !== true) {
+                    return false;
+                }
+
+                $extracted = $zip->extractTo($extractToPath);
+                $zip->close();
+
+                if ($deleteAfterExtraction) {
+                    return unlink($pathToArchive);
+                }
+
+                return $extracted;
+            } else {
+                $process = new Process(['tar -xf', '/C', '"' . $extractToPath . '"']);
+                $process->run();
+
+                if (!$process->isSuccessful()) {
+                    return false;
+                }
+
+                if ($deleteAfterExtraction) {
+                    return unlink($pathToArchive);
+                }
+
+                return true;
             }
-
-            $extracted = $zip->extractTo($extractToPath);
-            $zip->close();
-
-            if ($deleteAfterExtraction) {
-                return unlink($pathToArchive);
-            }
-
-            return $extracted;
         } else {
 //            tar -xf
             return ';';

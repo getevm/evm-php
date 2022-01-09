@@ -72,7 +72,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             return Command::FAILURE;
         }
 
-        $this->getConsoleOutputService()->success('php.ini enabled.');
+        $this->getConsoleOutputService()->success('Successfully enabled php.ini.');
 
         /*********************************************************
          * Attempt to download and store the CA Cert for php.ini
@@ -86,17 +86,23 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
                 $this->getConsoleOutputService()->success('CA Cert saved to ' . $pathToCert . '.');
 
-//                if ($phpIniService->setCurlCAInfo($pathToCert)) {
-//                    $this->getConsoleOutputService()->success('Successfully set curl.cainfo in php.ini.');
-//                } else {
-//                    $this->getConsoleOutputService()->warning('Failed to set curl.cainfo in php.ini.');
-//                }
-//
-//                if ($phpIniService->setOpenSslCAPath($pathToCert)) {
-//                    $this->getConsoleOutputService()->success('Successfully set openssl.cafile in php.ini.');
-//                } else {
-//                    $this->getConsoleOutputService()->warning('Failed to set openssl.cafile in php.ini.');
-//                }
+                /*********************************
+                 * Attempt to set the curl.cainfo
+                 *********************************/
+                if ($phpIniService->setCurlCAInfo($pathToCert)) {
+                    $this->getConsoleOutputService()->success('Successfully set curl.cainfo in php.ini.');
+                } else {
+                    $this->getConsoleOutputService()->warning('Failed to set curl.cainfo in php.ini.');
+                }
+
+                /************************************
+                 * Attempt to set the openssl.cafile
+                 ************************************/
+                if ($phpIniService->setOpenSslCAPath($pathToCert)) {
+                    $this->getConsoleOutputService()->success('Successfully set openssl.cafile in php.ini.');
+                } else {
+                    $this->getConsoleOutputService()->warning('Failed to set openssl.cafile in php.ini.');
+                }
             } else {
                 $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
             }
@@ -107,7 +113,8 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         /*********************************************************
          * Setup the PHP extensions as requested by the user
          *********************************************************/
-//        $helper = $this->getCommand()->getHelper('question');
+        $helper = $this->getCommand()->getHelper('question');
+
 //        $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
 //        $extOptions = array_merge(['none', 'all'], $exts);
 //        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
