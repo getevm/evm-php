@@ -137,10 +137,15 @@ class FileService
             }
 
             $exts = array_map(function ($ext) {
-                return pathinfo($ext, PATHINFO_FILENAME);
+                return str_replace('php_', '', pathinfo($ext, PATHINFO_FILENAME));
             }, $exts);
 
-            throw new Exception(json_encode($exts));
+
+            if (empty($exts)) {
+                return false;
+            }
+
+            return $exts;
         } else {
 
         }

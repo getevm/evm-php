@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Services\Php;
 
 use Getevm\Evm\Services\Filesystem\FileService;
+use Getevm\Evm\Services\SystemService;
 
 class PhpIniService
 {
@@ -28,9 +29,35 @@ class PhpIniService
         $this->fileService = $fileService ?? new FileService();
     }
 
-    public function enableExtensions(array $extensions)
+    /**
+     * @param array $extensions
+     * @return bool
+     */
+    public function enableExtensions(array $extensions): bool
     {
+        if (SystemService::getOSType() === 'nt') {
+            foreach ($extensions as $ext) {
 
+                $replace = ';extension=' . $ext;
+
+//            if (strpos($iniFile, $extNeedle) !== false) {
+//                $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
+//            }
+            }
+
+            return true;
+        } else {
+            foreach ($extensions as $ext) {
+
+                $replace = ';extension=' . $ext;
+
+//            if (strpos($iniFile, $extNeedle) !== false) {
+//                $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
+//            }
+            }
+
+            return true;
+        }
     }
 
     /**
@@ -50,9 +77,13 @@ class PhpIniService
      */
     public function setExtensionsDir(): bool
     {
-        $search = ';extension_dir = "ext"';
-        $replace = $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
-        return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+        if (SystemService::getOSType() === 'nt') {
+            $search = ';extension_dir = "ext"';
+            $replace = $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
+            return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+        } else {
+            return false;
+        }
     }
 
     /**

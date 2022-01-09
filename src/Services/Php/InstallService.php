@@ -103,55 +103,45 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
                     $this->getConsoleOutputService()->warning('Failed to set openssl.cafile in php.ini.');
                 }
             } else {
-                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll have to do this manually.');
+                $this->getConsoleOutputService()->warning('Failed to save the CA Cert. You\'ll need to do this manually.');
             }
         } else {
-            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll have to do this manually.');
+            $this->getConsoleOutputService()->warning('Failed to download the CA Cert. You\'ll need to do this manually.');
         }
 
-        /*********************************************************
-         * Setup the PHP extensions as requested by the user
-         *********************************************************/
-        $pathToExtsDir = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
         $helper = $this->getCommand()->getHelper('question');
 
-        $this->getFileService()->getExtsListFromDir($pathToExtsDir);
-
-
-//        $exts = array_values(json_decode(file_get_contents(__DIR__ . '/../../data/php.json'), true)['exts']);
-//        $extOptions = array_merge(['none', 'all'], $exts);
-//        $extsQuestions = new ChoiceQuestion('Do wish enable extensions for the installations?', $extOptions, '0');
-//        $extsQuestions->setMultiselect(true);
-//        $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestions);
-
-        /**
-         * - set extensions
-         * - set extension_dir
-         */
-
-//        if (!in_array('none', $extsToEnable)) {
-//            $iniFilePath = DEPS_PATH . DIRECTORY_SEPARATOR . $this->buildInstallationDirectoryName() . DIRECTORY_SEPARATOR;
+        /************************************
+         * Attempt to set the extensions_dir
+         ************************************/
+        if ($phpIniService->setExtensionsDir()) {
+            /*********************************************************
+             * Setup the PHP extensions as requested by the user
+             *********************************************************/
+//        $pathToExtsDir = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
+//        $exts = $this->getFileService()->getExtsListFromDir($pathToExtsDir);
 //
-//            rename($iniFilePath . 'php.ini-production', $iniFilePath . 'php.ini');
-//            copy($iniFilePath . 'php.ini', $iniFilePath . 'php.ini.bak');
+//        if ($exts) {
+//            $exts = array_merge(['none', 'all'], $exts);
+//            $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $exts, '0');
+//            $extsQuestion->setMultiselect(true);
+//            $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestion);
 //
-//            $iniFile = file_get_contents($iniFilePath . 'php.ini');
-//            $extsToEnable = $extsToEnable[0] === 'all' ? $exts : $extsToEnable;
+//            if (!in_array('none', $extsToEnable)) {
+//                if ($phpIniService->enableExtensions($extsToEnable)) {
 //
-//            foreach ($extsToEnable as $ext) {
-//                $extNeedle = ';extension=' . $ext;
-//
-//                if (strpos($iniFile, $extNeedle) !== false) {
-//                    $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
 //                }
+//            } else {
+//                $this->getConsoleOutputService()->warning('No extensions selected. Skipping.');
 //            }
 //
-//            $extensionDirValue = 'extension_dir="' . $iniFilePath . 'ext' . '"';
-//            $iniFile = str_replace(';extension_dir = "ext"', $extensionDirValue, $iniFile);
-//            file_put_contents($iniFilePath . 'php.ini', $iniFile);
-//            unlink($iniFilePath . 'php.ini.bak');
-//        }
+//        } else {
 //
+//        }
+        } else {
+            $this->getConsoleOutputService()->warning('Unable to set extension_dir. Skipping extension setup.');
+        }
+
         $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
         $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
