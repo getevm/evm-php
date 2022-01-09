@@ -100,7 +100,7 @@ class FileService
 
                 return $extracted;
             } else {
-                $process = new Process(['tar -xf'], $baseDir);
+                $process = new Process(['tar', '-xf'], $baseDir);
                 $process->run();
 
                 if (!$process->isSuccessful()) {
