@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Services\Filesystem;
 
 use Getevm\Evm\Services\SystemService;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use ZipArchive;
 
@@ -102,10 +103,8 @@ class FileService
                 $process = new Process(['tar -xf'], $baseDir);
                 $process->run();
 
-                return $process->getOutput();
-
                 if (!$process->isSuccessful()) {
-                    return false;
+                    throw new ProcessFailedException($process);
                 }
 
                 if ($deleteAfterExtraction) {
