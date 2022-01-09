@@ -86,6 +86,7 @@ class FileService
             }
 
             $extracted = $zip->extractTo($extractToPath);
+            $zip->close();
 
             if ($deleteAfterExtraction) {
                 return unlink($pathToArchive);
