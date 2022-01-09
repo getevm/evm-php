@@ -36,27 +36,20 @@ class PhpIniService
     public function enableExtensions(array $extensions): bool
     {
         if (SystemService::getOSType() === 'nt') {
+            $iniFile = file_get_contents($this->pathToIniFile);
+
             foreach ($extensions as $ext) {
+                $search = ';extension=' . $ext;
+                $replace = 'extension=' . $ext;
 
-                $replace = ';extension=' . $ext;
-
-//            if (strpos($iniFile, $extNeedle) !== false) {
-//                $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
-//            }
+                if (strpos($iniFile, $search) !== false) {
+                    $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+                }
             }
-
+            
             return true;
         } else {
-            foreach ($extensions as $ext) {
-
-                $replace = ';extension=' . $ext;
-
-//            if (strpos($iniFile, $extNeedle) !== false) {
-//                $iniFile = str_replace($extNeedle, 'extension=' . $ext, $iniFile);
-//            }
-            }
-
-            return true;
+            //
         }
     }
 

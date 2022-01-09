@@ -118,26 +118,25 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             /*********************************************************
              * Setup the PHP extensions as requested by the user
              *********************************************************/
-//        $pathToExtsDir = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
-//        $exts = $this->getFileService()->getExtsListFromDir($pathToExtsDir);
-//
-//        if ($exts) {
-//            $exts = array_merge(['none', 'all'], $exts);
-//            $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $exts, '0');
-//            $extsQuestion->setMultiselect(true);
-//            $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestion);
-//
-//            if (!in_array('none', $extsToEnable)) {
-//                if ($phpIniService->enableExtensions($extsToEnable)) {
-//
-//                }
-//            } else {
-//                $this->getConsoleOutputService()->warning('No extensions selected. Skipping.');
-//            }
-//
-//        } else {
-//
-//        }
+            $pathToExtsDir = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext';
+            $exts = $this->getFileService()->getExtsListFromDir($pathToExtsDir);
+
+            if ($exts) {
+                $exts = array_merge(['none', 'all'], $exts);
+                $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $exts, '0');
+                $extsQuestion->setMultiselect(true);
+                $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestion);
+
+                if (!in_array('none', $extsToEnable)) {
+                    if ($phpIniService->enableExtensions($extsToEnable)) {
+                        $this->getConsoleOutputService()->success('Successfully enabled extensions.');
+                    }
+                } else {
+                    $this->getConsoleOutputService()->warning('No extensions selected. Skipping.');
+                }
+            } else {
+
+            }
         } else {
             $this->getConsoleOutputService()->warning('Unable to set extension_dir. Skipping extension setup.');
         }
