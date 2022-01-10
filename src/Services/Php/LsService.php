@@ -13,9 +13,9 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
      */
     public function execute(): int
     {
-        $this->getOutputInterface()->writeln([
-            'v' . PHP_VERSION,
-            PHP_BINARY
+        $this->getOutputInterface()->success([
+            'PHP: ' . PHP_VERSION,
+            'Installation Directory: ' . PHP_BINARY
         ]);
 
         return Command::SUCCESS;

@@ -2,7 +2,7 @@
 
 namespace Getevm\Evm\Abstracts;
 
-use GuzzleHttp\Client;
+use Getevm\Evm\Services\Console\ConsoleOutputService;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class LsServiceAbstract
@@ -11,6 +11,11 @@ class LsServiceAbstract
      * @var OutputInterface
      */
     private $outputInterface;
+
+    /**
+     * @var ConsoleOutputService
+     */
+    private $consoleOutputService;
 
     /**
      * @var array
@@ -25,21 +30,30 @@ class LsServiceAbstract
     public function __construct(OutputInterface $output, array $config)
     {
         $this->outputInterface = $output;
+        $this->consoleOutputService = new ConsoleOutputService($output);
         $this->config = $config;
     }
 
     /**
      * @return OutputInterface
      */
-    public function getOutputInterface()
+    public function getOutputInterface(): OutputInterface
     {
         return $this->outputInterface;
     }
 
     /**
+     * @return ConsoleOutputService
+     */
+    public function getConsoleOutputService(): ConsoleOutputService
+    {
+        return $this->consoleOutputService;
+    }
+
+    /**
      * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }
