@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Commands;
 
 use Getevm\Evm\Services\Php\InstallService;
+use Getevm\Evm\Services\Php\LsService;
 use Getevm\Evm\Services\Php\UseService;
 use Getevm\Evm\Services\SystemService;
 use GuzzleHttp\Exception\GuzzleException;
@@ -38,25 +39,23 @@ class PhpCommand extends Command
     {
         $cmd = $input->getArgument('cmd');
         $version = $input->getArgument('version');
+        $config = [
+            'version' => $version,
+            'ts' => $input->getOption('ts'),
+            'archType' => $input->getOption('archType'),
+            'os' => SystemService::getOSAsString(),
+            'osType' => SystemService::getOSType(),
+        ];
 
         switch ($cmd) {
             case 'install':
-                return (new InstallService($this, $input, $output, [
-                    'version' => $version,
-                    'ts' => $input->getOption('ts'),
-                    'archType' => $input->getOption('archType'),
-                    'os' => SystemService::getOSAsString(),
-                    'osType' => SystemService::getOSType(),
-                ]))->execute();
+                return (new InstallService($this, $input, $output, $config))->execute();
 
             case 'use':
-                return (new UseService($output, [
-                    'version' => $version,
-                    'ts' => $input->getOption('ts'),
-                    'archType' => $input->getOption('archType'),
-                    'os' => SystemService::getOSAsString(),
-                    'osType' => SystemService::getOSType(),
-                ]))->execute();
+                return (new UseService($output, $config))->execute();
+
+            case 'ls':
+                return (new LsService($output, $config))->execute();
 
             default:
                 return Command::SUCCESS;
