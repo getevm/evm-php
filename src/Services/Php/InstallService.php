@@ -22,7 +22,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         $this->getConsoleOutputService()->std([
             'OS: ' . ($this->getConfig()['os'] . ' (' . $this->getConfig()['osType'] . ')'),
             'Architecture: ' . $this->getConfig()['archType'],
-            'Thread Safety: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
+            'Thread Safe: ' . ($this->getConfig()['ts'] ? 'Yes' : 'No')
         ]);
 
         $this->getConsoleOutputService()->std('Finding appropriate release...');
