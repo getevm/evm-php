@@ -124,15 +124,18 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
             if ($exts) {
                 $allExts = array_merge(['none', 'all'], $exts);
-                $extsQuestion = new ChoiceQuestion('Do wish enable extensions for the installations?', $allExts, '0');
+                $extsQuestion = new ChoiceQuestion('Do wish to enable extensions for the installations?', $allExts, '0');
                 $extsQuestion->setMultiselect(true);
                 $extsToEnable = $helper->ask($this->getInputInterface(), $this->getOutputInterface(), $extsQuestion);
 
                 if (!in_array('none', $extsToEnable)) {
                     $extsToEnable = in_array('all', $extsToEnable) ? $exts : $extsToEnable;
+                    $outcome = $phpIniService->enableExtensions($extsToEnable);
 
-                    if ($phpIniService->enableExtensions($extsToEnable)) {
-                        $this->getConsoleOutputService()->success('Successfully enabled extensions.');
+                    $this->getConsoleOutputService()->success('Successfully enabled extensions: ' . implode(', ', $outcome['success']));
+
+                    if (!empty($outcome['failure'])) {
+                        $this->getConsoleOutputService()->error('Failed to enable extensions: ' . implode(', ', $outcome['failure']));
                     }
                 } else {
                     $this->getConsoleOutputService()->warning('No extensions selected. Skipping.');
@@ -168,6 +171,9 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         return $name;
     }
 
+    /**
+     * @return string|null
+     */
     public function getReleaseUrl(): ?string
     {
         $self = $this;
@@ -204,12 +210,17 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
                 $majorVersion = explode('.', $this->getConfig()['version'])[0];
 
                 return 'https://museum.php.net/php' . $majorVersion . '/' . $release[0];
+
             default:
                 return null;
         }
     }
 
-    private function getMetadataFromReleaseNameNT($release)
+    /**
+     * @param $release
+     * @return array
+     */
+    private function getMetadataFromReleaseNameNT($release): array
     {
         $fileNameWithoutExt = pathinfo($release, PATHINFO_FILENAME);
         $isNtsRelease = strpos($release, '-nts-') !== false;
@@ -234,7 +245,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         return [
             'version' => $version,
             'ts' => !isset($nts),
-            'archType' => isset($archType) ? $archType : null,
+            'archType' => $archType ?? null,
             'ext' => pathinfo($release, PATHINFO_EXTENSION),
         ];
     }

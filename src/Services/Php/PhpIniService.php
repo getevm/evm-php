@@ -22,6 +22,10 @@ class PhpIniService
      */
     private $fileService;
 
+    /**
+     * @param string $pathToInstallationDir
+     * @param FileService|null $fileService
+     */
     public function __construct(string $pathToInstallationDir, FileService $fileService = null)
     {
         $this->pathToInstallationDir = $pathToInstallationDir;
@@ -31,10 +35,15 @@ class PhpIniService
 
     /**
      * @param array $extensions
-     * @return bool
+     * @return array
      */
-    public function enableExtensions(array $extensions): bool
+    public function enableExtensions(array $extensions): array
     {
+        $outcome = [
+            'success' => [],
+            'failure' => []
+        ];
+
         if (SystemService::getOSType() === 'nt') {
             $iniFile = file_get_contents($this->pathToIniFile);
 
@@ -43,14 +52,18 @@ class PhpIniService
                 $replace = 'extension=' . $ext;
 
                 if (strpos($iniFile, $search) !== false) {
-                    $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+                    if ($this->fileService->replaceInFile($search, $replace, $this->pathToIniFile)) {
+                        $outcome['success'][] = $ext;
+                    } else {
+                        $outcome['failure'][] = $ext;
+                    }
+                } else {
+                    $outcome['failure'][] = $ext;
                 }
             }
-
-            return true;
-        } else {
-            //
         }
+
+        return $outcome;
     }
 
     /**
