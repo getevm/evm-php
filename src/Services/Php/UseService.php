@@ -2,7 +2,7 @@
 
 namespace Getevm\Evm\Services\Php;
 
-use Getevm\Evm\Abstracts\UseServiceAbstract;
+use Getevm\Evm\Abstracts\Php\UseServiceAbstract;
 use Getevm\Evm\Interfaces\UseServiceInterface;
 use Getevm\Evm\Services\Filesystem\FileService;
 use Getevm\Evm\Services\SystemService;

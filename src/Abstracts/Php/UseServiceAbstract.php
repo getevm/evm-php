@@ -1,8 +1,7 @@
 <?php
 
-namespace Getevm\Evm\Abstracts;
+namespace Getevm\Evm\Abstracts\Php;
 
-use GuzzleHttp\Client;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class UseServiceAbstract

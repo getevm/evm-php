@@ -8,7 +8,6 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use Getevm\Evm\Commands\PhpCommand;
-use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Application;
 
 /**

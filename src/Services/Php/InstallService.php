@@ -2,7 +2,7 @@
 
 namespace Getevm\Evm\Services\Php;
 
-use Getevm\Evm\Abstracts\InstallServiceAbstract;
+use Getevm\Evm\Abstracts\Php\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;

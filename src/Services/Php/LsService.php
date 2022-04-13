@@ -2,7 +2,7 @@
 
 namespace Getevm\Evm\Services\Php;
 
-use Getevm\Evm\Abstracts\LsServiceAbstract;
+use Getevm\Evm\Abstracts\Php\LsServiceAbstract;
 use Getevm\Evm\Interfaces\LsServiceInterface;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;

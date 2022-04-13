@@ -1,6 +1,6 @@
 <?php
 
-namespace Getevm\Evm\Abstracts;
+namespace Getevm\Evm\Abstracts\Php;
 
 use Getevm\Evm\Services\Console\ConsoleOutputService;
 use Symfony\Component\Console\Output\OutputInterface;
