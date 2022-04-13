@@ -38,6 +38,11 @@ class FileService
         return $path;
     }
 
+    public function pathToWindowsEvmFolder(): string
+    {
+        return $_SERVER['HOMEDRIVE'] . DIRECTORY_SEPARATOR . 'Windows';
+    }
+
     /**
      * @return string|null
      */
@@ -62,6 +67,7 @@ class FileService
     {
         $dirs = [
             self::getPathToLogsDir(),
+            self::pathToWindowsEvmFolder()
         ];
 
         foreach ($dirs as $dir) {
