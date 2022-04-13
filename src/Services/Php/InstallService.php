@@ -34,7 +34,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             return Command::FAILURE;
         }
 
-        $this->getConsoleOutputService()->std('Release found attempting to download from ' . $releaseUrl . '...');
+        $this->getConsoleOutputService()->std('Release found attempting to download it from ' . $releaseUrl);
 
         try {
             $response = $this->getGuzzle()->get($releaseUrl);
@@ -45,6 +45,8 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $response = $response->getBody();
         $pathToInstallationDir = $this->getFileService()->getPathToInstallationDir() . DIRECTORY_SEPARATOR . $this->buildOutputName();
+
+        $this->getConsoleOutputService()->info($_SERVER['HOMEDRIVE']);
 
         if (!is_dir($pathToInstallationDir)) {
             mkdir($pathToInstallationDir, null, true);

@@ -8,6 +8,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use Getevm\Evm\Commands\PhpCommand;
+use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Application;
 
 /**
@@ -15,6 +16,10 @@ use Symfony\Component\Console\Application;
  * - evm php use 7.4.0
  * - evm php remove 7.4.0
  */
+
+if (SystemService::getOSType() === 'nt') {
+
+}
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);

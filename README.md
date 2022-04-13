@@ -16,12 +16,12 @@ This tool assumes a couple of things:
 1. You have [Composer](https://getcomposer.org/) installed
 2. You have PHP v7.3 or greater installed
 
-# Installation
+# Installation & Update
 
 This package is installed as a global package:
 
 ```
-composer gloabl require getevm/evm
+composer global require getevm/evm
 ```
 
 and from time to time we'll update this package:
@@ -38,6 +38,8 @@ own subcommands:
 ```bash
 evm <dependency> <cmd>
 ```
+
+**Note:** This may never happen.
 
 ### PHP
 

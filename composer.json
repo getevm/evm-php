@@ -22,5 +22,8 @@
   },
   "bin": [
     "bin/evm"
-  ]
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "9"
+  }
 }

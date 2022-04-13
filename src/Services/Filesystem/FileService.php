@@ -61,7 +61,7 @@ class FileService
     public function createPrerequisiteDirectories()
     {
         $dirs = [
-            self::getPathToLogsDir()
+            self::getPathToLogsDir(),
         ];
 
         foreach ($dirs as $dir) {
@@ -79,7 +79,7 @@ class FileService
      * @param bool $deleteAfterExtraction
      * @return bool
      */
-    public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true)
+    public function unzip(string $pathToArchive, string $extractToPath, bool $deleteAfterExtraction = true): bool
     {
         $pathInfo = pathinfo($pathToArchive);
 
