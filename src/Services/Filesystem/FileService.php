@@ -66,9 +66,12 @@ class FileService
     public function createPrerequisiteDirectories()
     {
         $dirs = [
-            self::getPathToLogsDir(),
-            self::pathToWindowsEvmFolder()
+            self::getPathToLogsDir()
         ];
+
+        if (SystemService::getOSType() === 'nt') {
+            $dirs[] = self::pathToWindowsEvmFolder();
+        }
 
         foreach ($dirs as $dir) {
             if (is_dir($dir)) {

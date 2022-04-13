@@ -46,8 +46,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         $response = $response->getBody();
         $pathToInstallationDir = $this->getFileService()->getPathToInstallationDir() . DIRECTORY_SEPARATOR . $this->buildOutputName();
 
-        $this->getConsoleOutputService()->info($_SERVER['HOMEDRIVE']);
-
         if (!is_dir($pathToInstallationDir)) {
             mkdir($pathToInstallationDir, null, true);
         }
