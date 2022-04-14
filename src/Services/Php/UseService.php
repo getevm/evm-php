@@ -21,6 +21,7 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         $newInstallationDirPath = FileService::getPathToInstallationDir() . DIRECTORY_SEPARATOR . $installationDirName;
 
         $this->getOutputInterface()->writeln([
+            'Output',
             $this->getPathVariable()
         ]);
 
@@ -97,10 +98,5 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
                     return !empty($v);
                 });
         }
-    }
-
-    private function getPathAsArray()
-    {
-
     }
 }
