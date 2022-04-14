@@ -20,7 +20,7 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         $oldInstallationDirPath = null;
         $newInstallationDirPath = FileService::getPathToInstallationDir() . DIRECTORY_SEPARATOR . $installationDirName;
 
-        $this->getOutputInterface()->writeln($this->getPathVariable());
+        $this->getOutputInterface()->writeln($this->getPathVariable()[0]);
 
         exit;
 
