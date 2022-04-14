@@ -20,21 +20,20 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         $oldInstallationDirPath = null;
         $newInstallationDirPath = FileService::getPathToInstallationDir() . DIRECTORY_SEPARATOR . $installationDirName;
 
-        $this->getOutputInterface()->writeln($this->getPathVariable()[0]);
-
-        exit;
-
         if (!is_dir($newInstallationDirPath)) {
-            $this->getOutputInterface()->writeln([
-                'This release hasn\'t been installed.'
-            ]);
+            $this->getConsoleOutputService()->error('This release hasn\'t been installed.');
+            return Command::FAILURE;
+        }
+
+        if (SystemService::getOS() === SystemService::OS_WIN && strlen($this->getPathVariables()) > 1024) {
+            $this->getConsoleOutputService()->error('Character limit reached. Unable to set the path variable.');
 
             return Command::FAILURE;
         }
 
         $oldPaths = array_map(function ($path) {
             return realpath($path);
-        }, $this->getPathVariable());
+        }, $this->getPathVariablesAsArray());
 
         $newPaths = array_map(function ($path) use ($newInstallationDirPath, &$oldInstallationDirPath) {
             $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR . pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
@@ -54,7 +53,6 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         $fileName = date('YmdHis') . '_' . $installationDirName . '.json';
 
         $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
-
         exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
         $logs['output'] = $output;
         $this->getOutputInterface()->writeln($output);
@@ -79,21 +77,41 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
     /**
      * @return false|string[]|void
      */
-    private function getPathVariable()
+    private function getPathVariables()
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
                 exec('echo %Path%', $output);
-                return array_filter(explode(';', $output[0]), function ($v) {
-                    return !empty($v);
-                });
+                return $output[0] ?? null;
 
             case SystemService::OS_LINUX:
             case SystemService::OS_OSX:
                 exec('echo $PATH', $output);
-                return array_filter(explode(':', $output[0]), function ($v) {
-                    return !empty($v);
-                });
+                return $output[0] ?? null;
         }
+    }
+
+    private function getPathVariablesAsArray()
+    {
+        $path = $this->getPathVariables();
+
+        if (!$path) {
+            return [];
+        }
+
+        $separators = [
+            SystemService::OS_WIN => ';',
+            SystemService::OS_LINUX => ':',
+            SystemService::OS_OSX => ':'
+        ];
+        $separator = $separators[SystemService::getOS()] ?? null;
+
+        if (!$separator) {
+            return [];
+        }
+
+        return array_filter(explode($separator, $path), function ($v) {
+            return !empty($v);
+        });
     }
 }
