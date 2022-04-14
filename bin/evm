@@ -9,6 +9,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 
 use Getevm\Evm\Commands\PhpCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 /**
@@ -19,7 +20,12 @@ use Symfony\Component\Process\Process;
 
 $process = new Process(['ls']);
 $process->run();
-exit($process->isSuccessful());
+
+if (!$process->isSuccessful()) {
+    throw new ProcessFailedException($process);
+}
+
+echo $process->getOutput() . PHP_EOL;
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
