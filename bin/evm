@@ -9,6 +9,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 
 use Getevm\Evm\Commands\PhpCommand;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Process\Process;
 
 /**
  * - evm php install 7.4.0
@@ -16,7 +17,7 @@ use Symfony\Component\Console\Application;
  * - evm php remove 7.4.0
  */
 
-$process = new \Symfony\Component\Process\Process(['echo %PATH%']);
+$process = new Process(['ls']);
 $process->run();
 echo  $process->getOutput();
 
