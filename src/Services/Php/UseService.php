@@ -26,7 +26,10 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         }
 
         if (SystemService::getOS() === SystemService::OS_WIN && strlen($this->getPathVariables()) > 1024) {
-            $this->getConsoleOutputService()->error('Character limit reached. Unable to set the path variable.');
+            $this->getConsoleOutputService()->error([
+                'Unable to set the path variable as the character limit has been reached. This is a restriction on Windows.',
+                'Set this path manually: ' . $newInstallationDirPath
+            ]);
             return Command::FAILURE;
         }
 
