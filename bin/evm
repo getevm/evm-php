@@ -17,8 +17,8 @@ use Symfony\Component\Console\Application;
  */
 
 $process = new \Symfony\Component\Process\Process(['echo %PATH%']);
-
-echo $process->getOutput();
+$process->run();
+echo  $process->getOutput();
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
