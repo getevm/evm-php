@@ -18,7 +18,7 @@ use Symfony\Component\Process\Process;
  * - evm php remove 7.4.0
  */
 
-$process = new Process(['dir']);
+$process = new Process(['echo %PATH%']);
 $process->run();
 
 if (!$process->isSuccessful()) {
