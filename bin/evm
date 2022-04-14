@@ -19,7 +19,7 @@ use Symfony\Component\Process\Process;
 
 $process = new Process(['ls']);
 $process->run();
-exit($process->getOutput());
+exit($process->isSuccessful());
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
