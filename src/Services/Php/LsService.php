@@ -18,7 +18,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
             'PHP: ' . PHP_VERSION,
             'Architecture: ' . SystemService::getArchType(),
             'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
-            'Installation Directory: ' . PHP_BINARY
+            'Installation Path: ' . PHP_BINARY
         ]);
 
         return Command::SUCCESS;
