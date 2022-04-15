@@ -41,26 +41,37 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
             return realpath($newInstallationDirPath);
         }, $oldPaths);
 
-        if (SystemService::getOS() === SystemService::OS_WIN && strlen(implode(';', $newPaths)) > 1024) {
-            $this->getConsoleOutputService()->error([
-                'Unable to set the path variable as the character limit has been reached. This is a restriction on Windows.',
-                'You\'ll need to set the path manually: ' . $newInstallationDirPath
-            ]);
-            return Command::FAILURE;
-        }
-
         $logs['oldPaths'] = $oldPaths;
         $logs['newPaths'] = $newPaths;
 
         $fileName = date('YmdHis') . '_' . $installationDirName . '.json';
+        $pathToLogFile = FileService::getPathToLogsDir() . DIRECTORY_SEPARATOR . $fileName;
 
-        $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
-        exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
-        $logs['output'] = $output;
-        $this->getOutputInterface()->writeln($output);
-        file_put_contents(FileService::getPathToLogsDir() . DIRECTORY_SEPARATOR . $fileName, json_encode($logs, JSON_PRETTY_PRINT));
+        switch (SystemService::getOS()) {
+            case SystemService::OS_WIN:
+                if (strlen(implode(';', $newPaths)) > 1024) {
+                    $this->getConsoleOutputService()->error([
+                        'Unable to set the path variable as the character limit has been reached. This is a restriction on Windows.',
+                        'You\'ll need to set the path manually: ' . $newInstallationDirPath
+                    ]);
+                    return Command::FAILURE;
+                }
 
-        return Command::SUCCESS;
+                $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
+                exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
+                $logs['output'] = $output;
+                $this->getConsoleOutputService()->std($output);
+                file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
+
+                return Command::SUCCESS;
+
+            case SystemService::OS_LINUX:
+            case SystemService::OS_OSX:
+                return Command::SUCCESS;
+
+            default:
+                return Command::FAILURE;
+        }
     }
 
     /**
