@@ -182,24 +182,36 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         switch ($config['osType']) {
             case 'nt':
-                $this->getConsoleOutputService()->std([
-                   $config['version']
-                ]);
+                if ($config['version'] === 'latest') {
+                    $releases = json_decode(file_get_contents('https://windows.php.net/downloads/releases/releases.json'), true);
 
-                $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
-                    $releaseMetadata = $self->getMetadataFromReleaseNameNT($release);
-                    $versionCheck = $releaseMetadata['version'] === $config['version'];
-                    $archTypeCheck = $releaseMetadata['archType'] === null || $releaseMetadata['archType'] === $config['archType'];
-                    $tsCheck = $releaseMetadata['ts'] === $config['ts'];
+                    if (!$releases || json_last_error() !== JSON_ERROR_NONE) {
+                        return null;
+                    }
 
-                    return $versionCheck && $archTypeCheck && $tsCheck;
-                }));
+                    krsort($releases, SORT_NUMERIC);
 
-                if (empty($release) || count($release) > 1) {
-                    return null;
+                    $this->getConsoleOutputService()->std([
+                        json_encode($config)
+                    ]);
+
+                    return 'https://windows.php.net/downloads/releases/';
+                } else {
+                    $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
+                        $releaseMetadata = $self->getMetadataFromReleaseNameNT($release);
+                        $versionCheck = $releaseMetadata['version'] === $config['version'];
+                        $archTypeCheck = $releaseMetadata['archType'] === null || $releaseMetadata['archType'] === $config['archType'];
+                        $tsCheck = $releaseMetadata['ts'] === $config['ts'];
+
+                        return $versionCheck && $archTypeCheck && $tsCheck;
+                    }));
+
+                    if (empty($release) || count($release) > 1) {
+                        return null;
+                    }
+
+                    return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
                 }
-
-                return 'https://windows.php.net/downloads/releases/archives/' . $release[0];
 
             case 'nix':
                 $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
@@ -214,7 +226,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
                 $majorVersion = explode('.', $this->getConfig()['version'])[0];
 
                 return 'https://museum.php.net/php' . $majorVersion . '/' . $release[0];
-
             default:
                 return null;
         }
