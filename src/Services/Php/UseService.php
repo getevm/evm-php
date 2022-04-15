@@ -104,6 +104,9 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
         }
     }
 
+    /**
+     * @return array|false|string[]
+     */
     private function getPathVariablesAsArray()
     {
         $path = $this->getPathVariables();

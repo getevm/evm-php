@@ -182,6 +182,10 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         switch ($config['osType']) {
             case 'nt':
+                $this->getConsoleOutputService()->std([
+                   $config['version']
+                ]);
+
                 $release = array_values(array_filter($releasesByOSType, function ($release) use ($config, $self) {
                     $releaseMetadata = $self->getMetadataFromReleaseNameNT($release);
                     $versionCheck = $releaseMetadata['version'] === $config['version'];
