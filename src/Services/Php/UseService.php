@@ -43,8 +43,7 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
 
         if (SystemService::getOS() === SystemService::OS_WIN && strlen(implode(';', $newPaths)) > 1024) {
             $this->getConsoleOutputService()->info([
-                $newPaths,
-                implode(';', $newPaths)
+                strlen(implode(';', $newPaths))
             ]);
             $this->getConsoleOutputService()->error([
                 'Unable to set the path variable as the character limit has been reached. This is a restriction on Windows.',
