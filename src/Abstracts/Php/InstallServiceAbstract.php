@@ -1,1 +1,123 @@
-C:\Python310\Scripts;C:\Python310;C:\Program Files\Common Files\Oracle\Java\javapath_target_347873437;C:\Program Files (x86)\Common Files\Oracle\Java\javapath_target_384796;C:\Python39\Scripts;C:\Python39;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\PuTTY;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\Windows Live\Shared;C:\ProgramData\ComposerSetup\bin;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\nodejs;C:\Users\Script47\AppData\Local\Microsoft\WindowsApps;C:\Users\Script47\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\Script47\AppData\Local\GitHubDesktop\bin;C:\Program Files\JetBrains\PhpStorm 2021.2.1\bin;C:\Users\Script47\AppData\Roaming\Composer\vendor\bin;C:\Users\Script47\AppData\Roaming\npm;C:\Program Files\Geth;C:\evm\8.1.3-ts-x64-nt;C:\Program Files\PowerShell\7-preview\preview;C:\Users\Script47\ffmpeg\bin;C:\Program Files\dotnet\
+<?php
+
+namespace Getevm\Evm\Abstracts\Php;
+
+use Getevm\Evm\Services\Console\ConsoleOutputService;
+use Getevm\Evm\Services\Filesystem\FileService;
+use GuzzleHttp\Client;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class InstallServiceAbstract
+{
+    /**
+     * @var Command
+     */
+    private $command;
+
+    /**
+     * @var InputInterface
+     */
+    private $inputInterface;
+
+    /**
+     * @var OutputInterface
+     */
+    private $outputInterface;
+
+    /**
+     * @var ConsoleOutputService
+     */
+    private $consoleOutputService;
+
+    /**
+     * @var FileService
+     */
+    private $fileService;
+
+    /**
+     * @var array
+     */
+    private $config;
+
+    /**
+     * @var Client
+     */
+    private $guzzle;
+
+    /**
+     * @param Command $command
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @param array $config
+     */
+    public function __construct(Command $command, InputInterface $input, OutputInterface $output, array $config)
+    {
+        $this->command = $command;
+        $this->inputInterface = $input;
+        $this->outputInterface = $output;
+        $this->consoleOutputService = new ConsoleOutputService($output);
+        $this->fileService = new FileService();
+        $this->config = $config;
+        $this->guzzle = new Client;
+
+        $this->fileService->createPrerequisiteDirectories();
+    }
+
+    /**
+     * @return Command
+     */
+    public function getCommand(): Command
+    {
+        return $this->command;
+    }
+
+    /**
+     * @return InputInterface
+     */
+    public function getInputInterface(): InputInterface
+    {
+        return $this->inputInterface;
+    }
+
+    /**
+     * @return OutputInterface
+     */
+    public function getOutputInterface(): OutputInterface
+    {
+        return $this->outputInterface;
+    }
+
+    /**
+     * @return ConsoleOutputService
+     */
+    public function getConsoleOutputService(): ConsoleOutputService
+    {
+        return $this->consoleOutputService;
+    }
+
+    /**
+     * @return FileService
+     */
+    public function getFileService(): FileService
+    {
+        return $this->fileService;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * @return Client
+     */
+    public function getGuzzle(): Client
+    {
+        return $this->guzzle;
+    }
+}
