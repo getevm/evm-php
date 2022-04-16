@@ -19,14 +19,14 @@ use Symfony\Component\Console\Application;
 
 $downloader = new CurlDownloader();
 
-$downloader->downloadZip('https://windows.php.net/downloads/releases/php-7.4.29-nts-Win32-vc15-x64.zip', function ($resource, $download_size, $downloaded, $upload_size, $uploaded) {
+$downloader->downloadZip('https://ipv4.download.thinkbroadband.com/1GB.zip', function ($resource, $download_size, $downloaded, $upload_size, $uploaded) {
     echo json_encode([
             $resource,
             $download_size,
             $downloaded,
             $upload_size,
             $uploaded
-    ]) . PHP_EOL;
+        ]) . PHP_EOL;
 }, function () {
 
 });
