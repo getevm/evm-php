@@ -19,7 +19,7 @@ use Symfony\Component\Console\Application;
 
 $downloader = new CurlDownloader();
 
-$downloader->downloadZip('https://ipv4.download.thinkbroadband.com/1GB.zip', function ($resource, $downloadSize, $downloaded, $uploadSize, $uploaded) {
+$output = $downloader->downloadZip('https://ipv4.download.thinkbroadband.com/1GB.zip', function ($resource, $downloadSize, $downloaded, $uploadSize, $uploaded) {
     echo json_encode([
        $resource,
        $downloadSize,
@@ -34,6 +34,8 @@ $downloader->downloadZip('https://ipv4.download.thinkbroadband.com/1GB.zip', fun
 }, function () {
 
 });
+
+file_put_contents('./test.zip', $output);
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
