@@ -19,14 +19,10 @@ use Symfony\Component\Console\Application;
 
 $downloader = new CurlDownloader();
 
-$downloader->downloadZip('https://ipv4.download.thinkbroadband.com/1GB.zip', function ($resource, $download_size, $downloaded, $upload_size, $uploaded) {
-    echo json_encode([
-            $resource,
-            $download_size,
-            $downloaded,
-            $upload_size,
-            $uploaded
-        ]) . PHP_EOL;
+$downloader->downloadZip('https://ipv4.download.thinkbroadband.com/1GB.zip', function ($resource, $downloadSize, $downloaded, $uploadSize, $uploaded) {
+    if ($downloaded > 0) {
+        echo $downloaded / $downloadSize * 100 . '%' . PHP_EOL;
+    }
 }, function () {
 
 });
