@@ -8,6 +8,7 @@ if (file_exists(__DIR__ . '/../../../autoload.php')) {
 }
 
 use Getevm\Evm\Commands\PhpCommand;
+use Getevm\Evm\Services\Http\CurlDownloader;
 use Symfony\Component\Console\Application;
 
 /**
@@ -15,6 +16,16 @@ use Symfony\Component\Console\Application;
  * - evm php use 7.4.0
  * - evm php remove 7.4.0
  */
+
+$downloader = new CurlDownloader();
+
+$downloader->downloadZip('https://windows.php.net/downloads/releases/php-7.4.29-nts-Win32-vc15-x64.zip', function () {
+
+}, function ($resource, $download_size, $downloaded, $upload_size, $uploaded) {
+    if ($download_size > 0) {
+        echo $downloaded / $download_size * 100 . PHP_EOL;
+    }
+});
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
