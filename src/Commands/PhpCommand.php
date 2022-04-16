@@ -57,6 +57,10 @@ class PhpCommand extends Command
             case 'ls':
                 return (new LsService($output, $config))->execute();
 
+            /** Sync /data/php.json with the latest file **/
+            case 'sync':
+                return Command::SUCCESS;
+
             default:
                 return Command::SUCCESS;
         }

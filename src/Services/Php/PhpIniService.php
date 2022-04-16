@@ -34,10 +34,11 @@ class PhpIniService
     }
 
     /**
+     * @param string $prepend
      * @param array $extensions
      * @return array
      */
-    public function enableExtensions(array $extensions): array
+    public function enableExtensions(array $extensions, string $prepend = ''): array
     {
         $outcome = [
             'success' => [],
@@ -48,17 +49,26 @@ class PhpIniService
             $iniFile = file_get_contents($this->pathToIniFile);
 
             foreach ($extensions as $ext) {
-                $search = ';extension=' . $ext;
-                $replace = 'extension=' . $ext;
+                $searches = [
+                    ";extension=php_$ext.dll",
+                    ";extension=php_$ext",
+                    ";extension=$ext"
+                ];
 
-                if (strpos($iniFile, $search) !== false) {
-                    if ($this->fileService->replaceInFile($search, $replace, $this->pathToIniFile)) {
-                        $outcome['success'][] = $ext;
+                foreach ($searches as $search) {
+                    $replace = substr($search, 1);
+
+                    if (strpos($iniFile, $search) !== false) {
+                        if ($this->fileService->replaceInFile($search, $replace, $this->pathToIniFile)) {
+                            $outcome['success'][] = $ext;
+                        } else {
+                            $outcome['failure'][] = $ext;
+                        }
+
+                        break;
                     } else {
                         $outcome['failure'][] = $ext;
                     }
-                } else {
-                    $outcome['failure'][] = $ext;
                 }
             }
         }
