@@ -22,6 +22,14 @@ class CurlDownloader
     {
         if ($downloadTotal > 0) {
             echo $downloaded / $downloadTotal * 100 . '%' . PHP_EOL;
+        } else {
+            echo json_encode([
+                $resource,
+                $downloadTotal,
+                $downloaded,
+                $uploadTotal,
+                $uploaded
+            ]);
         }
     }
 }
