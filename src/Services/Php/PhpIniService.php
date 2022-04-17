@@ -93,10 +93,16 @@ class PhpIniService
      */
     public function setExtensionsDir(): bool
     {
+        $iniFile = file_get_contents($this->pathToIniFile);
+
         if (SystemService::getOSType() === 'nt') {
-            $search = ';extension_dir = "ext"';
             $replace = 'extension_dir = "' . $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext"';
-            return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+
+            foreach (['; extension_dir = "ext"', ';extension_dir = "ext"'] as $search) {
+                if (strpos($iniFile, $search) !== false) {
+                    return $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+                }
+            }
         } else {
             return false;
         }
