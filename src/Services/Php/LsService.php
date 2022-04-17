@@ -14,7 +14,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
      */
     public function execute(): int
     {
-        $this->getConsoleOutputService()->success([
+        $this->getConsoleOutputService()->info([
             'PHP: ' . PHP_VERSION,
             'Architecture: ' . SystemService::getArchType(),
             'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),

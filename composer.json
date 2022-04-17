@@ -1,6 +1,8 @@
 {
   "name": "getevm/evm",
   "description": "An environment version manager.",
+  "keywords": ["environment version manager", "environment", "version", "manager"],
+  "license": "MIT",
   "authors": [
     {
       "name": "Script47",
