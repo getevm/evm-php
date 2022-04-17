@@ -97,11 +97,14 @@ class PhpIniService
 
         if (SystemService::getOSType() === 'nt') {
             $output = false;
-            $replace = 'extension_dir = "' . $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext"';
+            $replace = 'extension_dir="' . $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext"';
 
             foreach (['; extension_dir = "ext"', ';extension_dir = "ext"'] as $search) {
                 if (strpos($iniFile, $search) !== false) {
                     $output = $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
+
+                    echo $output . PHP_EOL;
+
                     break;
                 }
             }
