@@ -38,6 +38,8 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $response = $this->getCurlDownloaderService()->download($releaseUrl);
 
+        $this->getConsoleOutputService()->std($response);
+
         if (!$response) {
             $this->getConsoleOutputService()->error('Failed to download release. Exiting.');
             return Command::INVALID;
