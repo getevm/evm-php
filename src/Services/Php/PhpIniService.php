@@ -99,6 +99,8 @@ class PhpIniService
             $output = false;
             $replace = 'extension_dir="' . $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext"';
 
+            echo $iniFile . PHP_EOL;
+
             foreach (['; extension_dir = "ext"', ';extension_dir = "ext"'] as $search) {
                 echo $search . PHP_EOL;
 
