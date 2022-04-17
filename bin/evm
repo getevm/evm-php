@@ -19,7 +19,7 @@ use Symfony\Component\Console\Application;
 
 $downloader = new CurlDownloader();
 
-$output = $downloader->downloadZip('https://stackoverflow.com/', function ($resource, $downloadSize, $downloaded, $uploadSize, $uploaded) {
+$output = $downloader->download('https://stackoverflow.com/', function ($resource, $downloadSize, $downloaded, $uploadSize, $uploaded) {
     echo json_encode([
        $resource,
        $downloadSize,
