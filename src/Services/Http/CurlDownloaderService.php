@@ -26,6 +26,7 @@ class CurlDownloaderService
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true);
         $response = curl_exec($ch);
 
         if ($response === false) {
