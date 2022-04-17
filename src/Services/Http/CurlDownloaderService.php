@@ -2,23 +2,8 @@
 
 namespace Getevm\Evm\Services\Http;
 
-use Getevm\Evm\Services\Console\ConsoleOutputService;
-
 class CurlDownloaderService
 {
-    /**
-     * @var ConsoleOutputService
-     */
-    private $consoleOutputService;
-
-    /**
-     * @param ConsoleOutputService $consoleOutputService
-     */
-    public function __construct(ConsoleOutputService $consoleOutputService)
-    {
-        $this->consoleOutputService = $consoleOutputService;
-    }
-
     public function download(string $url)
     {
         $ch = curl_init();

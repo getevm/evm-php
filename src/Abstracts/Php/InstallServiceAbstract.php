@@ -60,7 +60,7 @@ class InstallServiceAbstract
         $this->consoleOutputService = new ConsoleOutputService($output);
         $this->fileService = new FileService();
         $this->config = $config;
-        $this->curlDownloaderService = new CurlDownloaderService($this->consoleOutputService);
+        $this->curlDownloaderService = new CurlDownloaderService();
 
         $this->fileService->createPrerequisiteDirectories();
     }

@@ -2,11 +2,11 @@
 
 namespace Getevm\Evm\Commands;
 
+use Exception;
 use Getevm\Evm\Services\Php\InstallService;
 use Getevm\Evm\Services\Php\LsService;
 use Getevm\Evm\Services\Php\UseService;
 use Getevm\Evm\Services\SystemService;
-use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -33,7 +33,7 @@ class PhpCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws GuzzleException
+     * @throws Exception
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

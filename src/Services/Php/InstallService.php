@@ -2,9 +2,9 @@
 
 namespace Getevm\Evm\Services\Php;
 
+use Exception;
 use Getevm\Evm\Abstracts\Php\InstallServiceAbstract;
 use Getevm\Evm\Interfaces\InstallServiceInterface;
-use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
@@ -15,7 +15,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
     /**
      * @return int
-     * @throws GuzzleException
+     * @throws Exception
      */
     public function execute(): int
     {
@@ -77,7 +77,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         /*********************************************************
          * Attempt to download and store the CA Cert for php.ini
          *********************************************************/
-        $certService = new CACertService();
+        $certService = new CACertService($this->getCurlDownloaderService());
         $pathToCert = $pathToInstallationDir . DIRECTORY_SEPARATOR . 'ssl';
 
         if ($cert = $certService->download()) {

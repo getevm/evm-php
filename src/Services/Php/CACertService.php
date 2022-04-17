@@ -2,27 +2,37 @@
 
 namespace Getevm\Evm\Services\Php;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use Getevm\Evm\Services\Http\CurlDownloaderService;
 
 class CACertService
 {
     const CA_CERT_URL = 'https://curl.haxx.se/ca/cacert.pem';
 
     /**
+     * @var CurlDownloaderService
+     */
+    private $curlDownloaderService;
+
+    /**
+     * @param CurlDownloaderService $curlDownloaderService
+     */
+    public function __construct(CurlDownloaderService $curlDownloaderService)
+    {
+        $this->curlDownloaderService = $curlDownloaderService;
+    }
+
+    /**
      * @return null|string
-     * @throws GuzzleException
      */
     public function download(): ?string
     {
-        $client = new Client();
-        $response = $client->get(self::CA_CERT_URL);
+        $response = $this->curlDownloaderService->download(self::CA_CERT_URL);
 
-        if ($response->getStatusCode() !== 200) {
+        if (!$response) {
             return null;
         }
 
-        return $response->getBody()->getContents();
+        return $response;
     }
 
     /**
