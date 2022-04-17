@@ -4,7 +4,7 @@ namespace Getevm\Evm\Abstracts\Php;
 
 use Getevm\Evm\Services\Console\ConsoleOutputService;
 use Getevm\Evm\Services\Filesystem\FileService;
-use GuzzleHttp\Client;
+use Getevm\Evm\Services\Http\CurlDownloaderService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,9 +42,9 @@ class InstallServiceAbstract
     private $config;
 
     /**
-     * @var Client
+     * @var CurlDownloaderService
      */
-    private $guzzle;
+    private $curlDownloaderService;
 
     /**
      * @param Command $command
@@ -60,7 +60,7 @@ class InstallServiceAbstract
         $this->consoleOutputService = new ConsoleOutputService($output);
         $this->fileService = new FileService();
         $this->config = $config;
-        $this->guzzle = new Client;
+        $this->curlDownloaderService = new CurlDownloaderService($this->consoleOutputService);
 
         $this->fileService->createPrerequisiteDirectories();
     }
@@ -114,10 +114,10 @@ class InstallServiceAbstract
     }
 
     /**
-     * @return Client
+     * @return CurlDownloaderService
      */
-    public function getGuzzle(): Client
+    public function getCurlDownloaderService(): CurlDownloaderService
     {
-        return $this->guzzle;
+        return $this->curlDownloaderService;
     }
 }

@@ -2,8 +2,23 @@
 
 namespace Getevm\Evm\Services\Http;
 
-class CurlDownloader
+use Getevm\Evm\Services\Console\ConsoleOutputService;
+
+class CurlDownloaderService
 {
+    /**
+     * @var ConsoleOutputService
+     */
+    private $consoleOutputService;
+
+    /**
+     * @param ConsoleOutputService $consoleOutputService
+     */
+    public function __construct(ConsoleOutputService $consoleOutputService)
+    {
+        $this->consoleOutputService = $consoleOutputService;
+    }
+
     public function download(string $url)
     {
         $ch = curl_init();
@@ -16,23 +31,11 @@ class CurlDownloader
         $response = curl_exec($ch);
 
         if ($response === false) {
-            echo 'error: ' . curl_error($ch);
+            $response = null;
         }
 
         curl_close($ch);
 
         return $response;
-    }
-
-    public function progressFunction($resource, $downloadTotal, $downloaded, $uploadTotal, $uploaded)
-    {
-        if ($downloadTotal > 0) {
-            echo $downloaded / $downloadTotal * 100 . '%' . PHP_EOL;
-        } else {
-            echo json_encode([
-                $downloadTotal,
-                $downloaded
-            ]);
-        }
     }
 }

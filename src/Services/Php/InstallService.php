@@ -36,9 +36,9 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $this->getConsoleOutputService()->std('Release found attempting to download it from ' . $releaseUrl);
 
-        try {
-            $response = $this->getGuzzle()->get($releaseUrl);
-        } catch (GuzzleException $e) {
+        $response = $this->getCurlDownloaderService()->download($releaseUrl);
+
+        if (!$response) {
             $this->getConsoleOutputService()->error('Failed to download release. Exiting.');
             return Command::INVALID;
         }
