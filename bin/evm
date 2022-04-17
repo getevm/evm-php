@@ -19,24 +19,11 @@ use Symfony\Component\Console\Application;
 
 $downloader = new CurlDownloader();
 
-$output = $downloader->download('https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-large-zip-file.zip', function ($resource, $downloadTotal, $downloaded, $uploadTotal, $uploaded) {
-    echo json_encode([
-        $downloadTotal,
-        $downloaded
-    ]);
-
-    if ($downloadTotal > 0) {
-        echo $downloaded / $downloadTotal * 100 . '%' . PHP_EOL;
-    }
-
-    ob_flush();
-    flush();
-    sleep(1);
+$downloader->download('https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-large-zip-file.zip', function ($resource, $downloadTotal, $downloaded, $uploadTotal, $uploaded) {
+    echo $downloaded / $downloadTotal * 100 . '%' . PHP_EOL;
 }, function () {
 
 });
-
-file_put_contents('./test.zip', $output);
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
