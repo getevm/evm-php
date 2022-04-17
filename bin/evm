@@ -28,6 +28,10 @@ $output = $downloader->download('https://www.learningcontainer.com/wp-content/up
     if ($downloadTotal > 0) {
         echo $downloaded / $downloadTotal * 100 . '%' . PHP_EOL;
     }
+
+    ob_flush();
+    flush();
+    sleep(1);
 }, function () {
 
 });
