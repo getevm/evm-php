@@ -26,13 +26,13 @@ class CurlDownloader
 
     public function progressFunction($resource, $downloadTotal, $downloaded, $uploadTotal, $uploaded)
     {
-        echo 'test';
         if ($downloadTotal > 0) {
             echo $downloaded / $downloadTotal * 100 . '%' . PHP_EOL;
         } else {
-            echo json_encode(func_get_args());
+            echo json_encode([
+                $downloadTotal,
+                $downloaded
+            ]);
         }
-        ob_flush();
-        flush();
     }
 }

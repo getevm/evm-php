@@ -19,7 +19,7 @@ use Symfony\Component\Console\Application;
 
 $downloader = new CurlDownloader();
 
-$downloader->download('https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-large-zip-file.zip');
+$downloader->download('https://windows.php.net/downloads/releases/archives/php-8.1.4-nts-Win32-vs16-x64.zip');
 
 $application = new Application('Environment Version Manager', '1.0.0');
 $application->add(new PhpCommand);
