@@ -185,9 +185,9 @@ class FileService
                 }
             }
 
-//            if (is_null($iteration)) {
-//                rmdir($path);
-//            }
+            if (is_null($iteration)) {
+                rmdir($path);
+            }
         }
     }
 }
