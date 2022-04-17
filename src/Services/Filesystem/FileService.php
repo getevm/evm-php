@@ -63,7 +63,7 @@ class FileService
         $dirs = [
             self::getPathToLogsDir()
         ];
-        
+
         foreach ($dirs as $dir) {
             if (is_dir($dir)) {
                 continue;
@@ -165,5 +165,25 @@ class FileService
                 $file,
                 str_replace($search, $replace, file_get_contents($file))
             ) !== false;
+    }
+
+    public function rrmdir($path)
+    {
+        if (is_dir($path)) {
+            foreach (scandir($path) as $resource) {
+                if (in_array($resource, ['.', '..'])) {
+                    continue;
+                }
+
+                if (is_dir($resource)) {
+                    $this->rrmdir($path . DIRECTORY_SEPARATOR . $resource);
+                    rmdir($path . DIRECTORY_SEPARATOR . $resource);
+                }
+
+                if (is_file($path . DIRECTORY_SEPARATOR . $resource)) {
+                    unlink($path . DIRECTORY_SEPARATOR . $resource);
+                }
+            }
+        }
     }
 }
