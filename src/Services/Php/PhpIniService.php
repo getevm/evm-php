@@ -106,12 +106,11 @@ class PhpIniService
 
                 if (strpos($iniFile, $search) !== false) {
                     $output = $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
-
-                    echo $output . PHP_EOL;
-
                     break;
                 }
             }
+
+            echo $output . PHP_EOL;
 
             return $output;
         } else {
