@@ -100,6 +100,8 @@ class PhpIniService
             $replace = 'extension_dir="' . $this->pathToInstallationDir . DIRECTORY_SEPARATOR . 'ext"';
 
             foreach (['; extension_dir = "ext"', ';extension_dir = "ext"'] as $search) {
+                echo $search . PHP_EOL;
+
                 if (strpos($iniFile, $search) !== false) {
                     $output = $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
 
