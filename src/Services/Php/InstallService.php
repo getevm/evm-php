@@ -43,7 +43,6 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
             return Command::INVALID;
         }
 
-        $response = $response->getBody();
         $pathToInstallationDir = $this->getFileService()->getPathToInstallationDir() . DIRECTORY_SEPARATOR . $this->buildOutputName();
 
         if (!is_dir($pathToInstallationDir)) {
