@@ -10,6 +10,6 @@ set OldPath=%Path%
 set NewPath=!OldPath:%OldInstallDir%=!
 set NewPath=%NewPath:"=%
 
-setx "%KeyName%" "%NewPath%%NewInstallDir%";
+setx /m "%KeyName%" "%NewPath%%NewInstallDir%";
 
 EndLocal
