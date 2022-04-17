@@ -13,6 +13,7 @@ class CurlDownloader
 
         if (is_callable($progressFunction)) {
             function progress($resource, $downloadTotal, $downloaded, $uploadTotal, $uploaded) {
+                global $progressFunction;
                 $progressFunction($resource, $downloadTotal, $downloaded, $uploadTotal, $uploaded);
             }
 
