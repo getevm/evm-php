@@ -103,13 +103,14 @@ class PhpIniService
                 echo $search . PHP_EOL;
 
                 if (strpos($iniFile, $search) !== false) {
+                    echo 'found' . PHP_EOL;
                     $output = $this->fileService->replaceInFile($search, $replace, $this->pathToIniFile);
                     break;
+                } else {
+                    echo 'not found' . PHP_EOL;
                 }
             }
-
-            echo $output . PHP_EOL;
-
+            
             return $output;
         } else {
             return false;
