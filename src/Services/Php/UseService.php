@@ -59,12 +59,14 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
 
                 $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
                 exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
-
-                $output = array_filter($output, 'strlen');
-
+                $output = implode('', array_values(array_filter($output, 'strlen')));
                 $logs['output'] = $output;
 
-                $this->getConsoleOutputService()->success($output);
+                if (strpos($output, 'SUCCESS') !== false) {
+                    $this->getConsoleOutputService()->success('Release has been activated. Refresh any terminals before attempting to use.');
+                } else {
+                    $this->getConsoleOutputService()->error($output);
+                }
 
                 file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
 
