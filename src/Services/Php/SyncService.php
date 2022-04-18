@@ -23,7 +23,7 @@ class SyncService extends SyncServiceAbstract implements SyncServiceInterface
             return Command::FAILURE;
         }
 
-        if ($versions === file_get_contents(SyncService::PATH_TO_LOCAL_VERSION_FILE)) {
+        if (file_exists(self::PATH_TO_LOCAL_VERSION_FILE) && $versions === file_get_contents(self::PATH_TO_LOCAL_VERSION_FILE)) {
             $this->getConsoleOutputService()->success('No changes detected to synchronise.');
             return Command::SUCCESS;
         }
