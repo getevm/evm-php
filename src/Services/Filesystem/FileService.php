@@ -192,6 +192,10 @@ class FileService
             }
 
             if ($iteration === 0) {
+                echo json_encode([
+                        $path,
+                        $iteration
+                    ]) . PHP_EOL;
                 rmdir($path);
             }
         }
