@@ -168,16 +168,21 @@ class FileService
             ) !== false;
     }
 
-    public function rrmdir($path, $iteration = null)
+    /**
+     * @param $path
+     * @param int $iteration
+     * @return void
+     */
+    public function rrmdir($path, int $iteration = 0)
     {
         if (is_dir($path)) {
-            foreach (scandir($path) as $key => $resource) {
+            foreach (scandir($path) as $resource) {
                 if (in_array($resource, ['.', '..'])) {
                     continue;
                 }
 
                 if (is_dir($resource)) {
-                    $this->rrmdir($path . DIRECTORY_SEPARATOR . $resource, $key);
+                    $this->rrmdir($path . DIRECTORY_SEPARATOR . $resource, $iteration + 1);
                     rmdir($path . DIRECTORY_SEPARATOR . $resource);
                 }
 
@@ -186,7 +191,7 @@ class FileService
                 }
             }
 
-            if (is_null($iteration)) {
+            if ($iteration === 0) {
                 rmdir($path);
             }
         }
