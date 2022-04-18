@@ -30,7 +30,13 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         if (!file_exists(self::PATH_TO_PHP_METADATA)) {
             $this->getConsoleOutputService()->warning('Version file missing. Attempting to synchronise with https://getevm.github.io/versions/php.json');
 
-            if (!(new SyncService($this->getOutputInterface()))->execute() != Command::SUCCESS) {
+            $syncService = new SyncService($this->getOutputInterface();
+
+            echo json_encode([
+                    $syncService->execute()
+                ]) . PHP_EOL;
+
+            if (!$syncService->execute() != Command::SUCCESS) {
                 $this->getConsoleOutputService()->error('Failed to synchronise version file.');
                 return Command::FAILURE;
             }
