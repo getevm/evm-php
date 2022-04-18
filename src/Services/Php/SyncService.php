@@ -18,14 +18,10 @@ class SyncService extends SyncServiceAbstract implements SyncServiceInterface
     {
         $versions = $this->getCurlDownloaderService()->download(self::PHP_VERSION_DATA_FILE);
 
-        echo $versions . PHP_EOL;
-
         if (!$versions) {
             $this->getConsoleOutputService()->error('Failed to download version file.');
             return Command::FAILURE;
         }
-
-        echo file_get_contents(SyncService::PATH_TO_LOCAL_VERSION_FILE);
 
         if ($versions === file_get_contents(SyncService::PATH_TO_LOCAL_VERSION_FILE)) {
             $this->getConsoleOutputService()->success('No changes detected to synchronise.');
