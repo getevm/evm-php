@@ -25,7 +25,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
         $dir = FileService::getPathToInstallationDir();
 
         foreach (scandir($dir) as $installation) {
-            if (!is_dir($installation) && in_array($installation, ['.', '..', 'logs'])) {
+            if (!is_dir($installation) || in_array($installation, ['.', '..', 'logs'])) {
                 continue;
             }
 
