@@ -3,6 +3,7 @@
 namespace Getevm\Evm\Abstracts\Php;
 
 use Getevm\Evm\Services\Console\ConsoleOutputService;
+use Getevm\Evm\Services\Http\CurlDownloaderService;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class SyncServiceAbstract
@@ -18,20 +19,18 @@ abstract class SyncServiceAbstract
     private $consoleOutputService;
 
     /**
-     * @var array
+     * @var CurlDownloaderService
      */
-    private $config;
+    private $curlDownloaderService;
 
     /**
      * @param OutputInterface $output
-     * @param array $config
-     * @return void
      */
-    public function __construct(OutputInterface $output, array $config)
+    public function __construct(OutputInterface $output)
     {
         $this->outputInterface = $output;
         $this->consoleOutputService = new ConsoleOutputService($output);
-        $this->config = $config;
+        $this->curlDownloaderService = new CurlDownloaderService();
     }
 
     /**
@@ -51,10 +50,10 @@ abstract class SyncServiceAbstract
     }
 
     /**
-     * @return array
+     * @return CurlDownloaderService
      */
-    public function getConfig()
+    public function getCurlDownloaderService(): CurlDownloaderService
     {
-        return $this->config;
+        return $this->curlDownloaderService;
     }
 }
