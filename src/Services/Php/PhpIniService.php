@@ -34,7 +34,6 @@ class PhpIniService
     }
 
     /**
-     * @param string $prepend
      * @param array $extensions
      * @return array
      */
