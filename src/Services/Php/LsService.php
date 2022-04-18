@@ -29,7 +29,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                 continue;
             }
 
-            echo $dir . DIRECTORY_SEPARATOR . $installation;
+            echo $dir . DIRECTORY_SEPARATOR . $installation . PHP_EOL;
         }
 
         return Command::SUCCESS;
