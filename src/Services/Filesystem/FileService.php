@@ -2,7 +2,6 @@
 
 namespace Getevm\Evm\Services\Filesystem;
 
-use Exception;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
@@ -124,7 +123,8 @@ class FileService
     }
 
     /**
-     * @throws Exception
+     * @param string $pathToExtDir
+     * @return array|false|void
      */
     public function getExtsListFromDir(string $pathToExtDir)
     {
@@ -139,6 +139,7 @@ class FileService
             $exts = array_map(function ($ext) {
                 return str_replace('php_', '', pathinfo($ext, PATHINFO_FILENAME));
             }, $exts);
+
             $exts = array_values(array_filter($exts, function ($ext) {
                 return !in_array($ext, ['oci8_12c', 'oci8_19', 'pdo_firebird', 'pdo_oci', 'zend_test', 'snmp']);
             }));

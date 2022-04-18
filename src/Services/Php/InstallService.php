@@ -45,9 +45,11 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $pathToInstallationDir = $this->getFileService()->getPathToInstallationDir() . DIRECTORY_SEPARATOR . $this->buildOutputName();
 
-        if (!is_dir($pathToInstallationDir)) {
-            mkdir($pathToInstallationDir, null, true);
+        if (is_dir($pathToInstallationDir)) {
+            $this->getFileService()->rrmdir($pathToInstallationDir);
         }
+
+        mkdir($pathToInstallationDir, null, true);
 
         $archiveName = pathinfo($releaseUrl, PATHINFO_BASENAME);
         $pathToArchive = $pathToInstallationDir . DIRECTORY_SEPARATOR . $archiveName;
