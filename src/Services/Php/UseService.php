@@ -25,9 +25,16 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
             return Command::FAILURE;
         }
 
+        $paths = $this->getPathVariablesAsArray();
+
+        if (!$paths) {
+            $this->getConsoleOutputService()->error('Unable to get system PATH variables.');
+            return Command::FAILURE;
+        }
+
         $oldPaths = array_map(function ($path) {
             return realpath($path);
-        }, $this->getPathVariablesAsArray());
+        }, $paths);
 
         $newPaths = array_map(function ($path) use ($newInstallationDirPath, &$oldInstallationDirPath) {
             $phpBinaryWithoutExt = str_replace(DIRECTORY_SEPARATOR . pathinfo(PHP_BINARY, PATHINFO_BASENAME), '', PHP_BINARY);
@@ -58,17 +65,27 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
                 }
 
                 $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
-                exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
+                $exec = exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
+
+                if ($exec === false) {
+                    $this->getConsoleOutputService()->error([
+                        'Failed to activate release.',
+                        'You\'ll need to set the path manually: ' . $newInstallationDirPath
+                    ]);
+                    return Command::FAILURE;
+                }
+
                 $output = implode('', array_values(array_filter($output, 'strlen')));
                 $logs['output'] = $output;
 
-                if (strpos($output, 'SUCCESS') !== false) {
-                    $this->getConsoleOutputService()->success('Release has been activated. Refresh any terminals before attempting to use.');
-                } else {
+                file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
+
+                if (strpos($output, 'SUCCESS') === false) {
                     $this->getConsoleOutputService()->error($output);
+                    return Command::FAILURE;
                 }
 
-                file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
+                $this->getConsoleOutputService()->success('Release has been activated. Refresh any terminals before attempting to use.');
 
                 return Command::SUCCESS;
 
@@ -95,26 +112,39 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
     }
 
     /**
-     * @return false|string[]|void
+     * @return string|null
      */
-    private function getPathVariables()
+    private function getPathVariables(): ?string
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
-                exec('echo %Path%', $output);
-                return $output[0] ?? null;
+                $exec = exec('echo %Path%', $output);
+
+                if ($exec === false) {
+                    return null;
+                }
+
+                return array_values(array_filter($output, 'strlen'))[0] ?? null;
 
             case SystemService::OS_LINUX:
             case SystemService::OS_OSX:
-                exec('echo $PATH', $output);
-                return $output[0] ?? null;
+                $exec = exec('echo $PATH', $output);
+
+                if ($exec === false) {
+                    return null;
+                }
+
+                return array_values(array_filter($output, 'strlen'))[0] ?? null;
+
+            default:
+                return null;
         }
     }
 
     /**
-     * @return array|false|string[]
+     * @return array
      */
-    private function getPathVariablesAsArray()
+    private function getPathVariablesAsArray(): array
     {
         $path = $this->getPathVariables();
 

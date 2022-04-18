@@ -4,6 +4,7 @@ namespace Getevm\Evm\Services\Php;
 
 use Getevm\Evm\Abstracts\Php\LsServiceAbstract;
 use Getevm\Evm\Interfaces\LsServiceInterface;
+use Getevm\Evm\Services\Filesystem\FileService;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;
 
@@ -20,6 +21,16 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
             'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
             'Installation Path: ' . PHP_BINARY
         ]);
+
+        $dir = FileService::getPathToInstallationDir();
+
+        foreach (scandir($dir) as $installation) {
+            if (!is_dir($installation) && in_array($installation, ['.', '..', 'logs'])) {
+                continue;
+            }
+
+            echo $dir . DIRECTORY_SEPARATOR . $installation;
+        }
 
         return Command::SUCCESS;
     }

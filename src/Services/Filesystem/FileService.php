@@ -12,7 +12,7 @@ class FileService
     /**
      * @return string|null
      */
-    public static function pathToEvmDir(): ?string
+    private static function pathToEvmDir(): ?string
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
