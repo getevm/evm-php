@@ -48,12 +48,14 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         if (is_dir($pathToInstallationDir)) {
             $this->getFileService()->rrmdir($pathToInstallationDir);
         }
-        
+
         mkdir($pathToInstallationDir, null, true);
 
         $archiveName = pathinfo($releaseUrl, PATHINFO_BASENAME);
         $pathToArchive = $pathToInstallationDir . DIRECTORY_SEPARATOR . $archiveName;
+
         file_put_contents($pathToArchive, $response);
+
         $this->getConsoleOutputService()->success('Downloaded release to ' . $pathToArchive . '.');
 
         /*****************************
@@ -151,7 +153,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
-        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
+        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now? ', false);
 
         if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
             return Command::SUCCESS;
