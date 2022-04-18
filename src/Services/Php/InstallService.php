@@ -54,7 +54,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         $archiveName = pathinfo($releaseUrl, PATHINFO_BASENAME);
         $pathToArchive = $pathToInstallationDir . DIRECTORY_SEPARATOR . $archiveName;
         file_put_contents($pathToArchive, $response);
-        $this->getConsoleOutputService()->success('Downloaded to ' . $pathToArchive . '.');
+        $this->getConsoleOutputService()->success('Downloaded release to ' . $pathToArchive . '.');
 
         /*****************************
          * Unzip release and cleanup
