@@ -15,29 +15,34 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
      */
     public function execute(): int
     {
-        $this->getConsoleOutputService()->std([
-            'PHP: ' . PHP_VERSION,
-            'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
-            'Architecture: ' . SystemService::getArchType(),
-            'Installation Path: ' . PHP_BINARY
-        ]);
+        switch (SystemService::getOS()) {
+            case SystemService::OS_WIN:
+                $this->getConsoleOutputService()->std([
+                    'PHP: ' . PHP_VERSION,
+                    'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
+                    'Architecture: ' . SystemService::getArchType(),
+                    'Installation Path: ' . PHP_BINARY
+                ]);
 
-        $dir = FileService::getPathToInstallationDir();
+                $dir = FileService::getPathToInstallationDir();
 
-        foreach (scandir($dir) as $resource) {
-            $path = $dir . DIRECTORY_SEPARATOR . $resource;
+                foreach (scandir($dir) as $resource) {
+                    $path = $dir . DIRECTORY_SEPARATOR . $resource;
 
-            if (!is_dir($path) || in_array($resource, ['.', '..', 'logs'])) {
-                continue;
-            }
+                    if (!is_dir($path) || in_array($resource, ['.', '..', 'logs'])) {
+                        continue;
+                    }
 
-            list($version, $ts, $arch, $osType) = explode('-', $resource);
+                    list($version, $ts, $arch, $osType) = explode('-', $resource);
 
-            if ($path === PHP_BINARY) {
-                $this->getConsoleOutputService()->success($version . ' (active)');
-            } else {
-                $this->getConsoleOutputService()->info($version);
-            }
+                    echo $path . ' ' . PHP_BINARY . PHP_EOL;
+
+                    if ($path === PHP_BINARY) {
+                        $this->getConsoleOutputService()->success($version . ' (active)');
+                    } else {
+                        $this->getConsoleOutputService()->info($version);
+                    }
+                }
         }
 
         return Command::SUCCESS;
