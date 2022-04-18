@@ -63,6 +63,8 @@ $ evm php install 8.1.0 --ts --archType=x86 # install v8.1.0 thread safe 32bit
 $ evm php use 8.1.0 --ts --archType=x64 # use v8.1.0 thread safe 64bit
 
 $ evm php ls # see information about current installed release
+
+$ evm php sync # synchronise version file with the centralized file; used to pull latest PHP releases
 ```
 
 # Support
