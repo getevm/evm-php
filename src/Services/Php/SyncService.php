@@ -9,6 +9,7 @@ use Symfony\Component\Console\Command\Command;
 class SyncService extends SyncServiceAbstract implements SyncServiceInterface
 {
     const PHP_VERSION_DATA_FILE = 'https://getevm.github.io/versions/php.json';
+    const PATH_TO_PHP_METADATA = __DIR__ . '/../../../data/php.json';
 
     /**
      * @return int
@@ -20,6 +21,11 @@ class SyncService extends SyncServiceAbstract implements SyncServiceInterface
         if (!$versions) {
             $this->getConsoleOutputService()->error('Failed to download version file.');
             return Command::FAILURE;
+        }
+
+        if ($versions === file_get_contents(SyncService::PATH_TO_PHP_METADATA)) {
+            $this->getConsoleOutputService()->success('No changes detected.');
+            return Command::SUCCESS;
         }
 
         $pathToVersionFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
