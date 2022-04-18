@@ -60,13 +60,11 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
                 $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
                 exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output, $resultCode);
                 $logs['output'] = $output;
-                $this->getConsoleOutputService()->std([
-                    $output
-                ]);
+                $this->getConsoleOutputService()->std($output);
 
                 echo json_encode([
                         $output
-                    ]) . PHP_EOL;
+                ]) . PHP_EOL;
                 file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
 
                 return Command::SUCCESS;
