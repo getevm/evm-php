@@ -31,7 +31,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                 continue;
             }
 
-            list($version, $ts, $arch, $osType) = explode('-', $path);
+            list($version, $ts, $arch, $osType) = explode('-', $resource);
 
             echo json_encode([
                     $version,
