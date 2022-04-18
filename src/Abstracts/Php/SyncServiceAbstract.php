@@ -5,7 +5,7 @@ namespace Getevm\Evm\Abstracts\Php;
 use Getevm\Evm\Services\Console\ConsoleOutputService;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class UseServiceAbstract
+abstract class SyncServiceAbstract
 {
     /**
      * @var OutputInterface
