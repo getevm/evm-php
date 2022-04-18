@@ -67,8 +67,7 @@ class PhpIniService
                     }
                 }
 
-                if (in_array($ext, $outcome['success'])) {
-                    echo 'missing ext ' . $ext;
+                if (!in_array($ext, $outcome['success'])) {
                     $outcome['failure'][] = $ext;
                 }
             }
