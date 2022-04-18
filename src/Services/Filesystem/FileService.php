@@ -175,13 +175,17 @@ class FileService
      */
     public function rrmdir($path, int $iteration = 0)
     {
+        if (is_file($path)) {
+            echo 'is file' . PHP_EOL;
+        }
+
         if (is_dir($path)) {
             foreach (scandir($path) as $resource) {
                 if (in_array($resource, ['.', '..'])) {
                     continue;
                 }
 
-                echo $resource . PHP_EOL;
+                echo $path . DIRECTORY_SEPARATOR . $resource . PHP_EOL;
 
                 if (is_dir($resource)) {
                     $this->rrmdir($path . DIRECTORY_SEPARATOR . $resource, $iteration + 1);
