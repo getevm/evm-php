@@ -175,9 +175,10 @@ class FileService
      */
     public function rrmdir($path, int $iteration = 0)
     {
-        if (is_file($path)) {
-            echo 'is file' . PHP_EOL;
-        }
+        echo json_encode([
+                $path,
+                $iteration
+            ]) . PHP_EOL;
 
         if (is_dir($path)) {
             foreach (scandir($path) as $resource) {
@@ -198,10 +199,6 @@ class FileService
             }
 
             if ($iteration === 0) {
-                echo json_encode([
-                        $path,
-                        $iteration
-                    ]) . PHP_EOL;
                 rmdir($path);
             }
         }
