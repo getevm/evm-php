@@ -175,26 +175,21 @@ class FileService
      */
     public function rrmdir($path, int $iteration = 0)
     {
-        echo json_encode([
-                $path,
-                $iteration
-            ]) . PHP_EOL;
-
         if (is_dir($path)) {
             foreach (scandir($path) as $resource) {
                 if (in_array($resource, ['.', '..'])) {
                     continue;
                 }
 
-                echo $path . DIRECTORY_SEPARATOR . $resource . PHP_EOL;
+                $subPath = $path . DIRECTORY_SEPARATOR . $resource;
 
-                if (is_dir($resource)) {
-                    $this->rrmdir($path . DIRECTORY_SEPARATOR . $resource, $iteration + 1);
-                    rmdir($path . DIRECTORY_SEPARATOR . $resource);
+                if (is_dir($subPath)) {
+                    $this->rrmdir($subPath, $iteration + 1);
+                    rmdir($subPath);
                 }
 
-                if (is_file($path . DIRECTORY_SEPARATOR . $resource)) {
-                    unlink($path . DIRECTORY_SEPARATOR . $resource);
+                if (is_file($subPath)) {
+                    unlink($subPath);
                 }
             }
 
