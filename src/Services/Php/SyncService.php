@@ -22,10 +22,13 @@ class SyncService extends SyncServiceAbstract implements SyncServiceInterface
             return Command::FAILURE;
         }
 
-        $pathToVersionFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'php.json';
+        $pathToVersionFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR;
 
-        echo realpath($pathToVersionFile) . PHP_EOL;
-        echo $pathToVersionFile . PHP_EOL;
+        if (!is_dir($pathToVersionFile)) {
+            mkdir($pathToVersionFile, null, true);
+        }
+
+        $pathToVersionFile .= 'php.json';
 
         if (file_put_contents($pathToVersionFile, $versions) === false) {
             $this->getConsoleOutputService()->error('Failed to write synchronised version file.');
