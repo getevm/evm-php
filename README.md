@@ -29,6 +29,7 @@ and from time to time we'll update this package:
 ```
 composer global update getevm/evm
 ```
+Until we have a stable release, you'll need to specify `:dev-master` after the package name.
 
 # Usage
 
