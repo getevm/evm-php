@@ -17,11 +17,13 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
     {
         switch (SystemService::getOS()) {
             case SystemService::OS_WIN:
+                $phpBinary = substr(PHP_BINARY, 0, strrpos(PHP_BINARY, '\\'));
+
                 $this->getConsoleOutputService()->std([
                     'PHP: ' . PHP_VERSION,
                     'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
                     'Architecture: ' . SystemService::getArchType(),
-                    'Installation Path: ' . PHP_BINARY
+                    'Installation Path: ' . $phpBinary
                 ]);
 
                 $dir = FileService::getPathToInstallationDir();
@@ -35,9 +37,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
 
                     list($version, $ts, $arch, $osType) = explode('-', $resource);
 
-                    echo $path . ' ' . PHP_BINARY . PHP_EOL;
-
-                    if ($path === PHP_BINARY) {
+                    if ($path === $phpBinary) {
                         $this->getConsoleOutputService()->success($version . ' (active)');
                     } else {
                         $this->getConsoleOutputService()->info($version);
