@@ -24,12 +24,14 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
 
         $dir = FileService::getPathToInstallationDir();
 
-        foreach (scandir($dir) as $installation) {
-            if (!is_dir($installation) || in_array($installation, ['.', '..', 'logs'])) {
+        foreach (scandir($dir) as $resource) {
+            $path = $dir . DIRECTORY_SEPARATOR . $resource;
+
+            if (!is_dir($path) || in_array($path, ['.', '..', 'logs'])) {
                 continue;
             }
 
-            list($version, $ts, $arch, $osType) = explode('-', $installation);
+            list($version, $ts, $arch, $osType) = explode('-', $path);
 
             echo json_encode([
                     $version,
@@ -38,7 +40,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                     $osType
                 ]) . PHP_EOL;
 
-            echo $dir . DIRECTORY_SEPARATOR . $installation . PHP_EOL;
+            echo $path . PHP_EOL;
         }
 
         return Command::SUCCESS;
