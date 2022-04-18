@@ -20,6 +20,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                 $phpBinary = substr(PHP_BINARY, 0, strrpos(PHP_BINARY, '\\'));
 
                 $this->getConsoleOutputService()->std([
+                    '-----------------------------------------------------',
                     'PHP: ' . PHP_VERSION,
                     'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
                     'Architecture: ' . SystemService::getArchType(),
@@ -46,6 +47,10 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                         $this->getConsoleOutputService()->info($version);
                     }
                 }
+
+                $this->getConsoleOutputService()->std([
+                    '-----------------------------------------------------'
+                ]);
         }
 
         return Command::SUCCESS;
