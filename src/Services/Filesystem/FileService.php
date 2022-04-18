@@ -181,6 +181,8 @@ class FileService
                     continue;
                 }
 
+                echo $resource . PHP_EOL;
+
                 if (is_dir($resource)) {
                     $this->rrmdir($path . DIRECTORY_SEPARATOR . $resource, $iteration + 1);
                     rmdir($path . DIRECTORY_SEPARATOR . $resource);
