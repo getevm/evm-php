@@ -29,6 +29,15 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                 continue;
             }
 
+            list($version, $ts, $arch, $osType) = explode('-', $installation);
+
+            echo json_encode([
+                    $version,
+                    $ts,
+                    $arch,
+                    $osType
+                ]) . PHP_EOL;
+
             echo $dir . DIRECTORY_SEPARATOR . $installation . PHP_EOL;
         }
 
