@@ -61,6 +61,8 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
                 exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
                 $logs['output'] = $output;
 
+                $this->getConsoleOutputService()->success($output[0]);
+
                 file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
 
                 return Command::SUCCESS;
