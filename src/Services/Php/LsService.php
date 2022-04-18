@@ -27,7 +27,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
         foreach (scandir($dir) as $resource) {
             $path = $dir . DIRECTORY_SEPARATOR . $resource;
 
-            if (!is_dir($path) || in_array($path, ['.', '..', 'logs'])) {
+            if (!is_dir($path) || in_array($resource, ['.', '..', 'logs'])) {
                 continue;
             }
 
