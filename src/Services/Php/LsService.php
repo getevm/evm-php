@@ -37,8 +37,10 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
 
                     list($version, $ts, $arch, $osType) = explode('-', $resource);
 
+                    $versionDescription = "v$version, $ts, $arch, and $osType";
+
                     if ($path === $phpBinary) {
-                        $this->getConsoleOutputService()->success($version . ' (active)');
+                        $this->getConsoleOutputService()->success($versionDescription . ' (active)');
                     } else {
                         $this->getConsoleOutputService()->info($version);
                     }
