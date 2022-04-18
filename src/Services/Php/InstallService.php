@@ -48,9 +48,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
         if (is_dir($pathToInstallationDir)) {
             $this->getFileService()->rrmdir($pathToInstallationDir);
         }
-
-        return Command::SUCCESS;
-
+        
         mkdir($pathToInstallationDir, null, true);
 
         $archiveName = pathinfo($releaseUrl, PATHINFO_BASENAME);
