@@ -5,6 +5,7 @@ namespace Getevm\Evm\Commands;
 use Exception;
 use Getevm\Evm\Services\Php\InstallService;
 use Getevm\Evm\Services\Php\LsService;
+use Getevm\Evm\Services\Php\SyncService;
 use Getevm\Evm\Services\Php\UseService;
 use Getevm\Evm\Services\SystemService;
 use Symfony\Component\Console\Command\Command;
@@ -59,7 +60,7 @@ class PhpCommand extends Command
 
             /** Sync /data/php.json with the latest file **/
             case 'sync':
-                return Command::SUCCESS;
+                return (new SyncService($output))->execute();
 
             default:
                 return Command::SUCCESS;
