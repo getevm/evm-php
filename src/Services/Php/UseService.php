@@ -59,6 +59,9 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
 
                 $pathToBatchFile = '"' . __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'bin' . DIRECTORY_SEPARATOR . 'setpath.bat' . '"';
                 exec($pathToBatchFile . ' "' . $oldInstallationDirPath . '" "' . $newInstallationDirPath . '" 2>&1', $output);
+
+                $output = array_filter($output, 'strlen');
+
                 $logs['output'] = $output;
 
                 $this->getConsoleOutputService()->success($output);
