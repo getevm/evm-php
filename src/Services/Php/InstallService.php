@@ -153,7 +153,7 @@ class InstallService extends InstallServiceAbstract implements InstallServiceInt
 
         $this->getConsoleOutputService()->success('Operation successful! Installed PHP v' . $this->getConfig()['version'] . '.');
 
-        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now? ', false);
+        $question = new ConfirmationQuestion('Do you want to activate v' . $this->getConfig()['version'] . ' now?', false);
 
         if (!$helper->ask($this->getInputInterface(), $this->getOutputInterface(), $question)) {
             return Command::SUCCESS;
