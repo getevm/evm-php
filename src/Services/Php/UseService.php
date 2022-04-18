@@ -63,8 +63,9 @@ class UseService extends UseServiceAbstract implements UseServiceInterface
                 $this->getConsoleOutputService()->std($output);
 
                 echo json_encode([
-                        $output
-                ]) . PHP_EOL;
+                        $resultCode
+                    ]) . PHP_EOL;
+
                 file_put_contents($pathToLogFile, json_encode($logs, JSON_PRETTY_PRINT));
 
                 return Command::SUCCESS;
