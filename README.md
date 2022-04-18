@@ -30,6 +30,8 @@ and from time to time we'll update this package:
 composer global update getevm/evm
 ```
 
+Until a stable version is released, you'll need to specify `:dev-master` after the package name.
+
 # Usage
 
 The idea is that this package will support a variety of different environment dependencies and each one will have its
@@ -63,6 +65,8 @@ $ evm php install 8.1.0 --ts --archType=x86 # install v8.1.0 thread safe 32bit
 $ evm php use 8.1.0 --ts --archType=x64 # use v8.1.0 thread safe 64bit
 
 $ evm php ls # see information about current installed release
+
+$ evm php sync # synchronise version file with the centralized file; used to pull latest PHP releases
 ```
 
 # Support
