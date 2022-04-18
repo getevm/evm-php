@@ -17,8 +17,8 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
     {
         $this->getConsoleOutputService()->std([
             'PHP: ' . PHP_VERSION,
-            'Architecture: ' . SystemService::getArchType(),
             'Thread Safe: ' . (ZEND_THREAD_SAFE ? 'Yes' : 'No'),
+            'Architecture: ' . SystemService::getArchType(),
             'Installation Path: ' . PHP_BINARY
         ]);
 
@@ -33,14 +33,11 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
 
             list($version, $ts, $arch, $osType) = explode('-', $resource);
 
-            echo json_encode([
-                    $version,
-                    $ts,
-                    $arch,
-                    $osType
-                ]) . PHP_EOL;
-
-            echo $path . PHP_EOL;
+            if ($path === PHP_BINARY) {
+                $this->getConsoleOutputService()->success($version . ' (active)');
+            } else {
+                $this->getConsoleOutputService()->info($version);
+            }
         }
 
         return Command::SUCCESS;
