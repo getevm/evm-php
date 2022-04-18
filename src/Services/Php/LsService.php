@@ -44,7 +44,7 @@ class LsService extends LsServiceAbstract implements LsServiceInterface
                     if ($path === $phpBinary) {
                         $this->getConsoleOutputService()->success($versionDescription . ' (active)');
                     } else {
-                        $this->getConsoleOutputService()->info($versionDescription);
+                        $this->getConsoleOutputService()->std($versionDescription);
                     }
                 }
 
