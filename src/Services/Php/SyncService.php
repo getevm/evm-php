@@ -22,7 +22,7 @@ class SyncService extends SyncServiceAbstract implements SyncServiceInterface
             return Command::FAILURE;
         }
 
-        $pathToVersionFile = __DIR__ . '/../../../data/php.json';
+        $pathToVersionFile = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'data' . DIRECTORY_SEPARATOR . 'php.json';
 
         echo realpath($pathToVersionFile) . PHP_EOL;
 
