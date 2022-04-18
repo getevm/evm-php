@@ -24,6 +24,8 @@ class SyncService extends SyncServiceAbstract implements SyncServiceInterface
 
         $pathToVersionFile = __DIR__ . '/../../../data/php.json';
 
+        echo realpath($pathToVersionFile) . PHP_EOL;
+
         if (file_put_contents($pathToVersionFile, $versions) === false) {
             $this->getConsoleOutputService()->error('Failed to write synchronised version file.');
             return Command::FAILURE;
